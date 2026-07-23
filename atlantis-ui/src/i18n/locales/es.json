@@ -1,0 +1,27 @@
+{
+    "app": {
+        "title": "Atlantis Quest",
+        "subtitle": "Los misterios de la tecnología atlante"
+        },
+    "language": {
+        "label": "Idioma"
+    },
+    "levels": {
+        "level00": {
+            "imageAlt": "Campamento de excavación arqueológica en el desierto",
+            "captionInitial": "Has llegado al campamento de excavación.",
+            "captionCompleted": "La primera señal de IRIS ha sido detectada.",
+            "title": "Atlantis Quest",
+            "paragraph1": "Una expedición arqueológica ha descubierto una entrada sellada bajo las arenas del desierto. Todo apunta a que conduce a los restos de la Atlántida.",
+            "paragraph2": "En su interior no se oculta un tesoro convencional, sino una tecnología de datos imposible para su época: InterSystems IRIS.",
+            "paragraph3": "Tu misión será desentrañar sus misterios superando las pruebas que protegen cada fragmento de conocimiento atlante.",
+            "paragraph4": "ObjectScript, clases, SQL, REST, JSON, Embedded Python y globals serán las claves para revelar el verdadero poder de IRIS.",
+            "startButton": "Comenzar exploración",
+            "successTitle": "Primera señal detectada",
+            "successParagraph1": "La aplicación web de Atlantis Quest se ha desplegado correctamente en Docker.",
+            "successParagraph2": "El campamento queda establecido y la expedición puede acceder al primer nivel del archivo atlante.",
+            "activationCodeLabel": "Código de acceso",
+            "hint": "Siguiente misión: conectar esta interfaz con la tecnología descubierta en el núcleo de InterSystems IRIS."
+        }
+    }
+}
