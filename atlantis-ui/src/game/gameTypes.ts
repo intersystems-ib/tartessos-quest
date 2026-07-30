@@ -15,3 +15,9 @@ export type GameProgress = {
   completedLevels: LevelId[];
   activationCodes: Record<string, string>;
 };
+
+export type QuestApiProgressResponse = {
+  currentLevel: LevelId;
+  completedLevels: LevelId[];
+  activationCodes?: Partial<Record<LevelId, string>>;
+};

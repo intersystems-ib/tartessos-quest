@@ -4,7 +4,7 @@ import type { QuestApiProgressResponse } from "../game/gameTypes";
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== "false";
 
 const mockProgress: QuestApiProgressResponse = {
-  currentLevel: "level00",
+  currentLevel: "level-00-intro",
   completedLevels: [],
   activationCodes: {},
 };

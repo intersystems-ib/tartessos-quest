@@ -1,0 +1,4 @@
+zn "%SYS"
+do ##class(%SYSTEM.License).Upgrade()
+do ##class(SYS.Container).QuiesceForBundling()
+do ##class(Security.Users).UnExpireUserPasswords("*")
