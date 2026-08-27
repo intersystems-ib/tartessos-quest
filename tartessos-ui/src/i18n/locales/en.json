@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Atlantis Quest",
+    "title": "Tartessos Quest",
     "subtitle": "The mysteries of Atlantean technology"
   },
   "language": {
@@ -11,14 +11,14 @@
           "imageAlt": "Archaeological excavation camp in the desert",
           "captionInitial": "You have arrived at the excavation camp.",
           "captionCompleted": "The first IRIS signal has been detected.",
-          "title": "Atlantis Quest",
-          "paragraph1": "An archaeological expedition has discovered a sealed entrance beneath the desert sands. Everything suggests it leads to the remains of Atlantis.",
+          "title": "Tartessos Quest",
+          "paragraph1": "An archaeological expedition has discovered a sealed entrance beneath the desert sands. Everything suggests it leads to the remains of Tartessos.",
           "paragraph2": "Inside, there is no ordinary treasure, but a data technology impossible for its age: InterSystems IRIS.",
           "paragraph3": "Your mission is to unravel its mysteries by overcoming the trials that protect each fragment of Atlantean knowledge.",
           "paragraph4": "ObjectScript, classes, SQL, REST, JSON, Embedded Python, and globals will be the keys to revealing the true power of IRIS.",
           "startButton": "Begin exploration",
           "successTitle": "First signal detected",
-          "successParagraph1": "The Atlantis Quest web application has been successfully deployed with Docker.",
+          "successParagraph1": "The Tartessos Quest web application has been successfully deployed with Docker.",
           "successParagraph2": "The camp is established, and the expedition can access the first level of the Atlantean archive.",
           "activationCodeLabel": "Access code",
           "hint": "Next mission: connect this interface to the technology discovered at the core of InterSystems IRIS."

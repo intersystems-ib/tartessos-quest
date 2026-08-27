@@ -1,7 +1,7 @@
 services:
-  iris-atlantis:
+  iris-tartessos:
     init: true
-    container_name: iris-atlantis
+    container_name: iris-tartessos
     build:
       context: .
       dockerfile: iris/Dockerfile
@@ -31,13 +31,13 @@ services:
     volumes:
       - ./webgateway/shared:/webgateway-shared
     depends_on:
-      - iris-atlantis
+      - iris-tartessos
 
-  atlantis-ui:
+  tartessos-ui:
     init: true
-    container_name: atlantis-ui
+    container_name: tartessos-ui
     build:
-      context: ./atlantis-ui
+      context: ./tartessos-ui
       dockerfile: Dockerfile
     ports:
       - "5173:80"
