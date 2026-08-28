@@ -11,7 +11,11 @@ import type { GameProgress, LevelId } from "./gameTypes";
 type GameContextValue = {
   progress: GameProgress | null;
   setProgress: (progress: GameProgress) => void;
-  completeLevel: (levelId: LevelId, activationCode?: string) => void;
+  completeLevel: (
+    levelId: LevelId,
+    activationCode?: string,
+    nextLevelId?: LevelId,
+  ) => void;
   isLevelCompleted: (levelId: LevelId) => boolean;
 };
 
@@ -20,7 +24,11 @@ const GameContext = createContext<GameContextValue | undefined>(undefined);
 export function GameProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<GameProgress | null>(null);
 
-  function completeLevel(levelId: LevelId, activationCode?: string) {
+  function completeLevel(
+    levelId: LevelId,
+    activationCode?: string,
+    nextLevelId?: LevelId,
+  ) {
     setProgress((current) => {
       if (!current) {
         return current;
@@ -32,6 +40,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       return {
         ...current,
+        currentLevel: nextLevelId ?? current.currentLevel,
         completedLevels,
         activationCodes: activationCode
           ? {

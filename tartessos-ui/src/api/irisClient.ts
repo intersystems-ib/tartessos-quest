@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  import.meta.env.VITE_IRIS_API_BASE_URL ?? "http://localhost:52773";
+  import.meta.env.VITE_IRIS_API_BASE_URL ?? "/api/tartessos";
 
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";

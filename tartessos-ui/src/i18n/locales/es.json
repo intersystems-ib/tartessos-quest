@@ -1,27 +1,44 @@
 {
-    "app": {
-        "title": "Tartessos Quest",
-        "subtitle": "Los misterios de la tecnología atlante"
-        },
-    "language": {
-        "label": "Idioma"
+  "app": {
+    "title": "Tartessos Quest",
+    "subtitle": "Los misterios de la tecnología tartésica"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "levels": {
+    "level00": {
+      "imageAlt": "Campamento de excavación arqueológica en el desierto",
+      "captionInitial": "Has llegado al campamento de excavación.",
+      "captionCompleted": "La primera señal del Núcleo Iris ha sido detectada.",
+      "title": "Tartessos Quest",
+      "paragraph1": "Una expedición arqueológica ha descubierto una entrada sellada bajo las arenas del sur. Todo apunta a que conduce a una cámara oculta de la antigua Tartessos.",
+      "paragraph2": "En su interior no se oculta un tesoro convencional, sino los restos de una tecnología imposible para su tiempo: una red de conocimiento que los tartésicos llamaban IRIS.",
+      "paragraph3": "Tu misión será descifrar sus mecanismos, restaurar sus cámaras y superar las pruebas que protegen cada fragmento de memoria tartésica.",
+      "paragraph4": "Glifos de código, registros vivos, consultas al oráculo, rutas secretas, lenguajes olvidados y memorias profundas serán las claves para despertar el núcleo.",
+      "startButton": "Comenzar exploración",
+      "successTitle": "Primera señal detectada",
+      "successParagraph1": "La interfaz de Tartessos Quest se ha desplegado correctamente en el campamento de exploración.",
+      "successParagraph2": "Los sistemas de superficie responden. La expedición puede iniciar el descenso hacia el primer umbral tartésico.",
+      "activationCodeLabel": "Código de acceso",
+      "hint": "Siguiente misión: establecer el primer vínculo con la tecnología dormida bajo las ruinas de Tartessos."
     },
-    "levels": {
-        "level00": {
-            "imageAlt": "Campamento de excavación arqueológica en el desierto",
-            "captionInitial": "Has llegado al campamento de excavación.",
-            "captionCompleted": "La primera señal de IRIS ha sido detectada.",
-            "title": "Tartessos Quest",
-            "paragraph1": "Una expedición arqueológica ha descubierto una entrada sellada bajo las arenas del desierto. Todo apunta a que conduce a los restos de la Atlántida.",
-            "paragraph2": "En su interior no se oculta un tesoro convencional, sino una tecnología de datos imposible para su época: InterSystems IRIS.",
-            "paragraph3": "Tu misión será desentrañar sus misterios superando las pruebas que protegen cada fragmento de conocimiento atlante.",
-            "paragraph4": "ObjectScript, clases, SQL, REST, JSON, Embedded Python y globals serán las claves para revelar el verdadero poder de IRIS.",
-            "startButton": "Comenzar exploración",
-            "successTitle": "Primera señal detectada",
-            "successParagraph1": "La aplicación web de Tartessos Quest se ha desplegado correctamente en Docker.",
-            "successParagraph2": "El campamento queda establecido y la expedición puede acceder al primer nivel del archivo atlante.",
-            "activationCodeLabel": "Código de acceso",
-            "hint": "Siguiente misión: conectar esta interfaz con la tecnología descubierta en el núcleo de InterSystems IRIS."
-        }
+    "level01": {
+      "imageAlt": "Formulario de registro de la expedición arqueológica",
+      "captionInitial": "La expedición necesita registrar tu nombre antes de permitirte acceder a los restos de Tartessos.",
+      "captionCompleted": "El formulario ha sido recibido con éxito.",
+      "title": "NOMBRE DEL AVENTURERO",
+      "paragraph1": "Antes de comenzar la aventura necesitas inscribirte en el registro de la expedición que explorará las cámaras selladas de Tartessos.",
+      "paragraph2": "Abre la clase Tartessos.Quest.Boot y cambia el valor del parámetro ADVENTURERNAME por tu nombre.",
+      "paragraph3": "Después compila la clase y pulsa ENVIAR FORMULARIO para transmitir tu inscripción al registro de la expedición.",
+      "submitButton": "ENVIAR FORMULARIO",
+      "submittingButton": "ENVIANDO...",
+      "successTitle": "Formulario recibido",
+      "successMessage": "El formulario ha sido recibido con éxito.",
+      "adventurerNameLabel": "Aventurero registrado",
+      "activationCodeLabel": "Código de validación",
+      "genericValidationError": "No se ha podido validar el formulario.",
+      "connectionError": "No se ha podido establecer comunicación con el núcleo tartésico."
     }
+  }
 }

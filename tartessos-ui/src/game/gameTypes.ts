@@ -1,5 +1,6 @@
 export type LevelId =
   | "level-00-intro"
+  | "level-01-adventurer-registration"
   | "level-01-iris-intro"
   | "level-02-objectscript-basics"
   | "level-03-debugging"
