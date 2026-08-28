@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { ActivationCode } from "../../components/ActivationCode";
 import { GameFrame } from "../../components/GameFrame";
+import { HelpModal } from "../../components/HelpModal";
 import { validateExercise1 } from "../../api/questApi";
 import { useGame } from "../../game/GameContext";
 
@@ -17,6 +18,8 @@ export function Level01AdventurerRegistration() {
 
   const savedCode = progress?.activationCodes[LEVEL_ID] ?? null;
   const alreadyCompleted = isLevelCompleted(LEVEL_ID);
+
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [validationCode, setValidationCode] = useState<string | null>(
@@ -77,16 +80,25 @@ export function Level01AdventurerRegistration() {
             <p>{t("levels.level01.paragraph3")}</p>
 
             {error && <p className={styles.error}>{error}</p>}
+            
+            <div className={styles.actions}>
+                <button
+                    className={styles.primaryButton}
+                    onClick={() => setHelpOpen(true)}
+                >
+                    {t("levels.level01.helpButton")}
+                </button>
 
-            <button
-              className={styles.primaryButton}
-              onClick={handleSubmitForm}
-              disabled={loading}
-            >
-              {loading
-                ? t("levels.level01.submittingButton")
-                : t("levels.level01.submitButton")}
-            </button>
+                <button
+                    className={styles.primaryButton}
+                    onClick={handleSubmitForm}
+                    disabled={loading}
+                >
+                    {loading
+                    ? t("levels.level01.submittingButton")
+                    : t("levels.level01.submitButton")}
+                </button>
+            </div>
           </>
         ) : (
           <div className={styles.successPanel}>
@@ -107,6 +119,28 @@ export function Level01AdventurerRegistration() {
           </div>
         )}
       </section>
+      {helpOpen && (
+        <HelpModal
+            title={t("levels.level01.helpTitle")}
+            closeLabel={t("levels.level01.helpCloseButton")}
+            onClose={() => setHelpOpen(false)}
+        >
+            <p>{t("levels.level01.helpIntro")}</p>
+
+            <ol>
+            <li>{t("levels.level01.helpStep1")}</li>
+            <li>{t("levels.level01.helpStep2")}</li>
+            <li>{t("levels.level01.helpStep3")}</li>
+            <li>{t("levels.level01.helpStep4")}</li>
+            <li>{t("levels.level01.helpStep5")}</li>
+            </ol>
+
+            <p>
+            <strong>{t("levels.level01.helpExpectedTitle")}:</strong>{" "}
+            {t("levels.level01.helpExpectedText")}
+            </p>
+        </HelpModal>
+        )}
     </GameFrame>
   );
 }

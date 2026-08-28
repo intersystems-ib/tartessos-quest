@@ -112,3 +112,31 @@
     bottom: 10px;
   }
 }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.secondaryButton {
+  padding: 10px 16px;
+  border: 2px solid #c59646;
+  background: #2d2115;
+  color: #ffd46b;
+  font-family: "Courier New", monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #080503;
+}
+
+.secondaryButton:hover {
+  background: #3a2a19;
+}
+
+.secondaryButton:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
