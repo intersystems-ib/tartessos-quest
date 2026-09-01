@@ -3,9 +3,5 @@ do ##class(%SYSTEM.License).Upgrade()
 do ##class(SYS.Container).QuiesceForBundling()
 do ##class(Security.Users).UnExpireUserPasswords("*")
 
-zn "MUS"
+zn "TARTESSOS"
 set sc = $SYSTEM.OBJ.LoadDir("/opt/irisapp/src/Tartessos", "ck", , 1)
-set production = "Tartessos.Production"
-set ^Ens.Configuration("csp","LastProduction") = production
-do ##class(Ens.Director).SetAutoStart(production)
-do ##class(Ens.Director).StartProduction(production)

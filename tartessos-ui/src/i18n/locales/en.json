@@ -1,36 +1,36 @@
 {
   "app": {
     "title": "Tartessos Quest",
-    "subtitle": "The mysteries of Tartessian technology"
+    "subtitle": "The mysteries beneath the southern sands"
   },
   "language": {
     "label": "Language"
   },
   "levels": {
     "level00": {
-      "imageAlt": "Archaeological excavation camp in the desert",
+      "imageAlt": "Archaeological excavation camp in an ancient marshland",
       "captionInitial": "You have arrived at the excavation camp.",
-      "captionCompleted": "The first signal from the Iris Core has been detected.",
+      "captionCompleted": "The expedition is ready.",
       "title": "Tartessos Quest",
-      "paragraph1": "An archaeological expedition has discovered a sealed entrance beneath the southern sands. Everything suggests it leads to a hidden chamber of ancient Tartessos.",
-      "paragraph2": "Inside, there is no ordinary treasure, but the remains of a technology impossible for its time: a network of knowledge the Tartessians called IRIS.",
-      "paragraph3": "Your mission is to decipher its mechanisms, restore its chambers, and overcome the trials protecting each fragment of Tartessian memory.",
-      "paragraph4": "Code glyphs, living records, oracle queries, secret routes, forgotten languages, and deep memories will be the keys to awakening the core.",
+      "paragraph1": "An archaeological expedition has discovered a sealed entrance beneath the southern sands. The first clues point to a forgotten chamber of ancient Tartessos.",
+      "paragraph2": "No one knows what lies beyond the threshold. The inscriptions found so far have not yet been translated; the ancient Tartessian language remains a mystery.",
+      "paragraph3": "Your mission is to accompany the expedition, decipher its signs, and advance step by step toward the heart of a lost civilization.",
+      "paragraph4": "Each chamber will reveal part of the mystery. Each decision will bring the expedition closer to the truth Tartessos left buried.",
       "startButton": "Begin exploration",
-      "successTitle": "First signal detected",
-      "successParagraph1": "The Tartessos Quest interface has been successfully deployed at the exploration camp.",
-      "successParagraph2": "The surface systems are responding. The expedition can begin its descent toward the first Tartessian threshold.",
+      "successTitle": "Expedition ready",
+      "successParagraph1": "The camp has been established.",
+      "successParagraph2": "The expedition can begin the descent toward the first Tartessian threshold.",
       "activationCodeLabel": "Access code",
-      "hint": "Next mission: establish the first link with the dormant technology beneath the ruins of Tartessos."
+      "hint": "Next mission: proceed to the expedition registry."
     },
     "level01": {
       "imageAlt": "Archaeological expedition registration form",
-      "captionInitial": "The first expedition record lies on the campaign table.",
-      "captionCompleted": "The entry seal has recognized your name.",
+      "captionInitial": "The expedition’s first registry awaits you on the campaign table.",
+      "captionCompleted": "You have been registered as a member of the expedition.",
       "title": "ADVENTURER NAME",
-      "paragraph1": "Before crossing the first threshold, the expedition must inscribe your name in the register of those who will descend into the chambers of Tartessos.",
-      "paragraph2": "The camp scribe awaits a clear signal: a name engraved into the initial mechanism, able to awaken the first echo of the dormant core.",
-      "paragraph3": "When the record is ready, submit the form so the expedition systems can verify whether your registration has been accepted.",
+      "paragraph1": "Before crossing the threshold, the expedition must record the names of those who will descend into the sealed chambers.",
+      "paragraph2": "The registry lies open on a table covered with maps, compasses, and ceramic fragments marked with ancient signs.",
+      "paragraph3": "Once your name has been entered, the expedition guide will give the signal to continue toward the main entrance.",
       "submitButton": "SUBMIT FORM",
       "submittingButton": "SUBMITTING...",
       "helpButton": "HELP",
@@ -49,7 +49,8 @@
       "adventurerNameLabel": "Registered adventurer",
       "activationCodeLabel": "Validation code",
       "genericValidationError": "The form could not be validated.",
-      "connectionError": "Communication with the Tartessian core could not be established."
+      "connectionError": "Could not contact the registration post.",
+      "formNotCompletedError": "The form has not been completed."
     }
   }
 }

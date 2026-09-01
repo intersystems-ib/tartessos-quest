@@ -1,7 +1,7 @@
 Class Tartessos.Quest.Boot Extends %RegisteredObject
 {
 
-Parameter ADVENTURERNAME = "CHANGE_ME";
+Parameter ADVENTURERNAME = "LUIS ÁNGEL";
 
 ClassMethod GetAdventurerName() As %String
 {

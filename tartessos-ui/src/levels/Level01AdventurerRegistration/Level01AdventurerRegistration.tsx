@@ -6,6 +6,7 @@ import { GameFrame } from "../../components/GameFrame";
 import { HelpModal } from "../../components/HelpModal";
 import { validateExercise1 } from "../../api/questApi";
 import { useGame } from "../../game/GameContext";
+import { IrisApiError } from "../../api/irisClient";
 
 import level01Image from "../../assets/images/level01.png";
 import styles from "./Level01AdventurerRegistration.module.css";
@@ -29,30 +30,56 @@ export function Level01AdventurerRegistration() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmitForm() {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    try {
-      const response = await validateExercise1();
+  try {
+    const response = await validateExercise1();
 
-      if (!response.success) {
-        setError(
-          response.errorMessage ||
-            t("levels.level01.genericValidationError"),
-        );
+    if (!response.success) {
+      if (response.errorCode === "ADVENTURER_NAME_NOT_CHANGED") {
+        setError(t("levels.level01.formNotCompletedError"));
         return;
       }
 
-      setValidationCode(response.validationCode);
-      setAdventurerName(response.adventurerName ?? null);
-
-      completeLevel(LEVEL_ID, response.validationCode);
-    } catch {
-      setError(t("levels.level01.connectionError"));
-    } finally {
-      setLoading(false);
+      setError(
+        response.errorMessage ||
+          t("levels.level01.genericValidationError"),
+      );
+      return;
     }
+
+    setValidationCode(response.validationCode);
+    setAdventurerName(response.adventurerName ?? null);
+
+    completeLevel(LEVEL_ID, response.validationCode);
+  } catch (error) {
+    if (error instanceof IrisApiError) {
+      const payload = error.payload as {
+        success?: boolean;
+        exercise?: number;
+        validationCode?: string;
+        errorCode?: string;
+        errorMessage?: string;
+      } | null;
+
+      if (payload?.errorCode === "ADVENTURER_NAME_NOT_CHANGED") {
+        setError(t("levels.level01.formNotCompletedError"));
+        return;
+      }
+
+      setError(
+        payload?.errorMessage ||
+          t("levels.level01.genericValidationError"),
+      );
+      return;
+    }
+
+    setError(t("levels.level01.connectionError"));
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <GameFrame>

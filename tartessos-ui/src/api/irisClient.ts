@@ -7,6 +7,17 @@ type RequestOptions = {
   headers?: Record<string, string>;
 };
 
+export class IrisApiError<T = unknown> extends Error {
+  status: number;
+  payload: T | null;
+
+  constructor(status: number, payload: T | null) {
+    super(`IRIS API error ${status}`);
+    this.status = status;
+    this.payload = payload;
+  }
+}
+
 export async function irisRequest<T>(
   path: string,
   options: RequestOptions = {},
@@ -20,9 +31,21 @@ export async function irisRequest<T>(
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
-  if (!response.ok) {
-    throw new Error(`IRIS API error ${response.status}`);
+  const text = await response.text();
+
+  let payload: unknown = null;
+
+  if (text) {
+    try {
+      payload = JSON.parse(text);
+    } catch {
+      payload = null;
+    }
   }
 
-  return response.json() as Promise<T>;
+  if (!response.ok) {
+    throw new IrisApiError(response.status, payload);
+  }
+
+  return payload as T;
 }
