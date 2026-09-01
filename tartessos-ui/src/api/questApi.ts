@@ -24,6 +24,18 @@ export type Exercise2ValidationResponse = {
   errorMessage: string;
 };
 
+export type Exercise3ValidationResponse = {
+  success: boolean;
+  exercise: number;
+  validationCode: string;
+  model?: {
+    baseClass?: string;
+    derivedClasses?: string[];
+  };
+  errorCode: string;
+  errorMessage: string;
+};
+
 export async function getQuestProgress(): Promise<QuestApiProgressResponse> {
   return irisRequest<QuestApiProgressResponse>("/progress");
 }
@@ -34,4 +46,8 @@ export async function validateExercise1(): Promise<ExerciseValidationResponse> {
 
 export async function validateExercise2(): Promise<Exercise2ValidationResponse> {
   return irisRequest<Exercise2ValidationResponse>("/exercise/2/validate");
+}
+
+export async function validateExercise3(): Promise<Exercise3ValidationResponse> {
+  return irisRequest<Exercise3ValidationResponse>("/exercise/3/validate");
 }

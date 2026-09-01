@@ -84,7 +84,40 @@
       "toolFlashlight": "Linterna",
       "toolBatteries": "Pilas",
       "genericValidationError": "El equipo todavía no está preparado.",
-      "connectionError": "No se ha podido contactar con el puesto de herramientas."
+      "connectionError": "No se ha podido contactar con el puesto de herramientas.",
+      "continueButton": "CONTINUAR"
+    },
+    "level03": {
+      "imageAlt": "Pasillo subterráneo con accesos a varias cámaras y un derrumbe central",
+      "captionInitial": "El primer pasillo del hipogeo se divide en cámaras todavía sin clasificar.",
+      "captionCompleted": "El plano inicial de las cámaras ha sido ordenado.",
+      "title": "EL PLANO DE LAS CÁMARAS",
+      "paragraph1": "El descenso conduce a un pasillo de piedra. A ambos lados se abren accesos oscuros, mientras un derrumbe bloquea el camino central.",
+      "paragraph2": "Las marcas de los muros sugieren que no todas las cámaras cumplían la misma función. Algunas parecen corredores, otras salas de reunión, otras espacios funerarios o almacenes sellados.",
+      "paragraph3": "Antes de avanzar, la expedición debe ordenar el primer mapa de las ruinas y clasificar cada tipo de cámara.",
+      "reviewButton": "REVISAR PLANO",
+      "reviewingButton": "REVISANDO...",
+      "helpButton": "AYUDA",
+      "helpTitle": "Cómo definir el modelo de cámaras",
+      "helpIntro": "Para completar este ejercicio debes crear un conjunto de clases ObjectScript usando paquetes, herencia y propiedades tipadas.",
+      "helpStep1": "Crea el paquete Tartessos.Quest.Chambers.",
+      "helpStep2": "Crea la clase Tartessos.Quest.Chambers.Chamber.",
+      "helpStep3": "Haz que Chamber extienda %RegisteredObject y márcala como Abstract.",
+      "helpStep4": "Añade a Chamber las propiedades Code, Name, Description, Level e IsSealed.",
+      "helpStep5": "Crea las clases Corridor, Hall, Mortuary y Storage dentro del mismo paquete.",
+      "helpStep6": "Haz que todas las clases específicas extiendan Tartessos.Quest.Chambers.Chamber.",
+      "helpStep7": "Añade a Corridor las propiedades Length y HasFork.",
+      "helpStep8": "Añade a Hall, Mortuary y Storage sus propiedades específicas según el enunciado del ejercicio.",
+      "helpStep9": "Compila el paquete Tartessos.Quest.Chambers y pulsa REVISAR PLANO.",
+      "helpExpectedTitle": "Resultado esperado",
+      "helpExpectedText": "La validación comprobará que existen las clases, que la herencia es correcta y que las propiedades tienen los tipos y valores iniciales esperados.",
+      "helpCloseButton": "CERRAR",
+      "successTitle": "Plano ordenado",
+      "successMessage": "El primer modelo de cámaras ha sido reconocido.",
+      "baseClassLabel": "Clase base",
+      "activationCodeLabel": "Código de validación",
+      "genericValidationError": "El plano de las cámaras todavía no está completo.",
+      "connectionError": "No se ha podido contactar con el puesto cartográfico."
     }
   }
 }

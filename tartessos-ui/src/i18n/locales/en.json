@@ -84,7 +84,40 @@
       "toolFlashlight": "Flashlight",
       "toolBatteries": "Batteries",
       "genericValidationError": "The equipment is not ready yet.",
-      "connectionError": "Could not contact the tool station."
+      "connectionError": "Could not contact the tool station.",
+      "continueButton": "CONTINUE"
+    },
+    "level03": {
+      "imageAlt": "Underground passage with access to several chambers and a central collapse",
+      "captionInitial": "The first passage of the hypogeum branches into chambers not yet classified.",
+      "captionCompleted": "The first chamber map has been organized.",
+      "title": "THE CHAMBER MAP",
+      "paragraph1": "The descent leads into a stone passage. Dark entrances open on both sides, while a collapse blocks the central path.",
+      "paragraph2": "The marks on the walls suggest that not every chamber served the same purpose. Some look like corridors, others like gathering halls, burial spaces, or sealed storage rooms.",
+      "paragraph3": "Before moving forward, the expedition must organize the first map of the ruins and classify each type of chamber.",
+      "reviewButton": "REVIEW MAP",
+      "reviewingButton": "REVIEWING...",
+      "helpButton": "HELP",
+      "helpTitle": "How to define the chamber model",
+      "helpIntro": "To complete this exercise, you must create a set of ObjectScript classes using packages, inheritance, and typed properties.",
+      "helpStep1": "Create the Tartessos.Quest.Chambers package.",
+      "helpStep2": "Create the Tartessos.Quest.Chambers.Chamber class.",
+      "helpStep3": "Make Chamber extend %RegisteredObject and mark it as Abstract.",
+      "helpStep4": "Add the Code, Name, Description, Level, and IsSealed properties to Chamber.",
+      "helpStep5": "Create the Corridor, Hall, Mortuary, and Storage classes in the same package.",
+      "helpStep6": "Make all specific classes extend Tartessos.Quest.Chambers.Chamber.",
+      "helpStep7": "Add Length and HasFork to Corridor.",
+      "helpStep8": "Add the specific properties for Hall, Mortuary, and Storage according to the exercise statement.",
+      "helpStep9": "Compile the Tartessos.Quest.Chambers package and press REVIEW MAP.",
+      "helpExpectedTitle": "Expected result",
+      "helpExpectedText": "The validation will check that the classes exist, that inheritance is correct, and that the properties have the expected types and initial values.",
+      "helpCloseButton": "CLOSE",
+      "successTitle": "Map organized",
+      "successMessage": "The first chamber model has been recognized.",
+      "baseClassLabel": "Base class",
+      "activationCodeLabel": "Validation code",
+      "genericValidationError": "The chamber map is not complete yet.",
+      "connectionError": "Could not contact the cartography station."
     }
   }
 }

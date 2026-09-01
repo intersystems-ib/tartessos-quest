@@ -1,6 +1,7 @@
 import { Level00Intro } from "../levels/Level00Intro";
 import { Level01AdventurerRegistration } from "../levels/Level01AdventurerRegistration";
 import { Level02ExcavationTools } from "../levels/Level02ExcavationTools";
+import { Level03ChamberModel } from "../levels/Level03ChamberModel";
 import { useGame } from "./GameContext";
 
 export function CurrentLevel() {
@@ -15,6 +16,9 @@ export function CurrentLevel() {
 
     case "level-02-excavation-tools":
       return <Level02ExcavationTools />;
+
+    case "level-03-chamber-model":
+      return <Level03ChamberModel />;
 
     default:
       return <Level00Intro />;

@@ -12,6 +12,7 @@ import level02Image from "../../assets/images/level02.png";
 import styles from "./Level02ExcavationTools.module.css";
 
 const LEVEL_ID = "level-02-excavation-tools" as const;
+const NEXT_LEVEL_ID = "level-03-chamber-model" as const;
 
 type Exercise2ErrorPayload = {
   success?: boolean;
@@ -77,6 +78,10 @@ export function Level02ExcavationTools() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleContinue() {
+    completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
   }
 
   return (
@@ -154,6 +159,12 @@ export function Level02ExcavationTools() {
               label={t("levels.level02.activationCodeLabel")}
               code={validationCode}
             />
+            <button
+              className={styles.primaryButton}
+              onClick={handleContinue}
+            >
+              {t("levels.level02.continueButton")}
+            </button>
           </div>
         )}
       </section>
