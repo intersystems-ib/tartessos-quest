@@ -10,10 +10,28 @@ export type ExerciseValidationResponse = {
   errorMessage: string;
 };
 
+export type Exercise2ValidationResponse = {
+  success: boolean;
+  exercise: number;
+  validationCode: string;
+  kit?: {
+    trowel?: number;
+    hat?: number;
+    flashlight?: number;
+    batteries?: number;
+  };
+  errorCode: string;
+  errorMessage: string;
+};
+
 export async function getQuestProgress(): Promise<QuestApiProgressResponse> {
   return irisRequest<QuestApiProgressResponse>("/progress");
 }
 
 export async function validateExercise1(): Promise<ExerciseValidationResponse> {
   return irisRequest<ExerciseValidationResponse>("/exercise/1/validate");
+}
+
+export async function validateExercise2(): Promise<Exercise2ValidationResponse> {
+  return irisRequest<Exercise2ValidationResponse>("/exercise/2/validate");
 }

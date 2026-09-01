@@ -5,7 +5,7 @@ ClassMethod PrepareTool(tool As %String, total As %Integer) As %Boolean
 {
     If tool = "trowel" {
         For counter = 1:1:total {
-            Do ##class(Tartessos.Quest.ExcavationKitUtils).AddTrowel()
+            Do ##class(Tartessos.Quest.Utils).AddTrowel()
         }
 
         Return 1
@@ -13,7 +13,7 @@ ClassMethod PrepareTool(tool As %String, total As %Integer) As %Boolean
 
     If tool = "hat" {
         For counter = 1:1:total {
-            Do ##class(Tartessos.Quest.ExcavationKitUtils).AddHat()
+            Do ##class(Tartessos.Quest.Utils).AddHat()
         }
 
         Return 1
@@ -21,7 +21,7 @@ ClassMethod PrepareTool(tool As %String, total As %Integer) As %Boolean
 
     If tool = "flashlight" {
         For counter = 1:1:total {
-            Do ##class(Tartessos.Quest.ExcavationKitUtils).AddFlashlight()
+            Do ##class(Tartessos.Quest.Utils).AddFlashlight()
         }
 
         Return 1
@@ -29,7 +29,7 @@ ClassMethod PrepareTool(tool As %String, total As %Integer) As %Boolean
 
     If tool = "batteries" {
         For counter = 1:1:total {
-            Do ##class(Tartessos.Quest.ExcavationKitUtils).AddBattery()
+            Do ##class(Tartessos.Quest.Utils).AddBattery()
         }
 
         Return 1

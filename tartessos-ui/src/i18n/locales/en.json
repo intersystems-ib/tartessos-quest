@@ -50,7 +50,41 @@
       "activationCodeLabel": "Validation code",
       "genericValidationError": "The form could not be validated.",
       "connectionError": "Could not contact the registration post.",
-      "formNotCompletedError": "The form has not been completed."
+      "formNotCompletedError": "The form has not been completed.",
+      "continueButton": "CONTINUE"
+    },
+    "level02": {
+      "imageAlt": "Wooden cabinet with excavation tools",
+      "captionInitial": "The campaign cabinet holds the expedition’s basic equipment.",
+      "captionCompleted": "The excavation kit is ready.",
+      "title": "THE EXCAVATION KIT",
+      "paragraph1": "Before entering the work area, the foreman points to an old wooden cabinet reinforced with iron.",
+      "paragraph2": "Its shelves hold tools worn by previous campaigns: dust-covered hats, flashlights, boxes of batteries, and excavation instruments.",
+      "paragraph3": "Nothing must be missing before leaving camp. The expedition will only move forward once the equipment has been checked.",
+      "reviewButton": "REVIEW KIT",
+      "reviewingButton": "REVIEWING...",
+      "helpButton": "HELP",
+      "helpTitle": "How to prepare the kit",
+      "helpIntro": "To complete this exercise, you must implement a class method that prepares tools using conditions and loops.",
+      "helpStep1": "Open the Tartessos.Quest.ExcavationTools class.",
+      "helpStep2": "Find the PrepareTool(tool As %String, total As %Integer) method.",
+      "helpStep3": "Check the value of tool using If statements.",
+      "helpStep4": "For each valid tool, create a For loop from 1 to total.",
+      "helpStep5": "Inside each loop, call the corresponding method from Tartessos.Quest.ExcavationKitUtils.",
+      "helpStep6": "Use AddTrowel(), AddHat(), AddFlashlight(), or AddBattery() as appropriate.",
+      "helpStep7": "Return 1 if the tool is valid and 0 if it is not. Compile the class before reviewing the kit.",
+      "helpExpectedTitle": "Expected result",
+      "helpExpectedText": "The validation will call PrepareTool with a test value and check that each tool global contains the expected quantity.",
+      "helpCloseButton": "CLOSE",
+      "successTitle": "Kit ready",
+      "successMessage": "The excavation kit is complete.",
+      "activationCodeLabel": "Validation code",
+      "toolTrowel": "Trowel",
+      "toolHat": "Hat",
+      "toolFlashlight": "Flashlight",
+      "toolBatteries": "Batteries",
+      "genericValidationError": "The equipment is not ready yet.",
+      "connectionError": "Could not contact the tool station."
     }
   }
 }

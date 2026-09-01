@@ -41,5 +41,4 @@ ClassMethod GetCount(tool As %String) As %Integer
     Return +$Get(^excavationKit(tool), 0)
 }
 
-
 }

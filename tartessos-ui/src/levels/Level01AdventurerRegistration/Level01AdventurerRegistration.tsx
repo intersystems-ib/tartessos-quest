@@ -12,6 +12,7 @@ import level01Image from "../../assets/images/level01.png";
 import styles from "./Level01AdventurerRegistration.module.css";
 
 const LEVEL_ID = "level-01-adventurer-registration" as const;
+const NEXT_LEVEL_ID = "level-02-excavation-tools" as const;
 
 export function Level01AdventurerRegistration() {
   const { t } = useTranslation();
@@ -81,6 +82,10 @@ export function Level01AdventurerRegistration() {
   }
 }
 
+function handleContinue() {
+  completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
+}
+
   return (
     <GameFrame>
       <div className={styles.scene}>
@@ -143,6 +148,12 @@ export function Level01AdventurerRegistration() {
               label={t("levels.level01.activationCodeLabel")}
               code={validationCode}
             />
+            <button
+              className={styles.primaryButton}
+              onClick={handleContinue}
+            >
+              {t("levels.level01.continueButton")}
+            </button>
           </div>
         )}
       </section>

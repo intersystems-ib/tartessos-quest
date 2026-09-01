@@ -50,7 +50,41 @@
       "activationCodeLabel": "Código de validación",
       "genericValidationError": "No se ha podido validar el formulario.",
       "connectionError": "No se ha podido contactar con el puesto de registro.",
-      "formNotCompletedError": "El formulario no se ha cumplimentado."
+      "formNotCompletedError": "El formulario no se ha cumplimentado.",
+      "continueButton": "CONTINUAR"
+    },
+    "level02": {
+      "imageAlt": "Armario de madera con herramientas de excavación",
+      "captionInitial": "El armario de campaña guarda el equipo básico de la expedición.",
+      "captionCompleted": "El equipo de excavación está preparado.",
+      "title": "EL EQUIPO DE EXCAVACIÓN",
+      "paragraph1": "Antes de cruzar hacia la zona de trabajo, el capataz señala un viejo armario de madera reforzado con hierro.",
+      "paragraph2": "En sus estantes descansan herramientas gastadas por otras campañas: sombreros cubiertos de polvo, linternas, cajas de pilas y utensilios de excavación.",
+      "paragraph3": "Nada debe faltar antes de abandonar el campamento. La expedición solo avanzará cuando el equipo haya sido revisado.",
+      "reviewButton": "REVISAR EQUIPO",
+      "reviewingButton": "REVISANDO...",
+      "helpButton": "AYUDA",
+      "helpTitle": "Cómo preparar el equipo",
+      "helpIntro": "Para completar este ejercicio debes implementar un método de clase que prepare herramientas usando condiciones y bucles.",
+      "helpStep1": "Abre la clase Tartessos.Quest.ExcavationTools.",
+      "helpStep2": "Localiza el método PrepareTool(tool As %String, total As %Integer).",
+      "helpStep3": "Comprueba el valor de tool usando sentencias If.",
+      "helpStep4": "Para cada herramienta válida, crea un bucle For desde 1 hasta total.",
+      "helpStep5": "Dentro de cada bucle, llama al método correspondiente de Tartessos.Quest.ExcavationKitUtils.",
+      "helpStep6": "Usa AddTrowel(), AddHat(), AddFlashlight() o AddBattery() según corresponda.",
+      "helpStep7": "Devuelve 1 si la herramienta es válida y 0 si no lo es. Compila la clase antes de revisar el equipo.",
+      "helpExpectedTitle": "Resultado esperado",
+      "helpExpectedText": "La validación llamará a PrepareTool con un valor de prueba y comprobará que los globals de cada herramienta contienen la cantidad esperada.",
+      "helpCloseButton": "CERRAR",
+      "successTitle": "Equipo preparado",
+      "successMessage": "El equipo de excavación está completo.",
+      "activationCodeLabel": "Código de validación",
+      "toolTrowel": "Paleta",
+      "toolHat": "Sombrero",
+      "toolFlashlight": "Linterna",
+      "toolBatteries": "Pilas",
+      "genericValidationError": "El equipo todavía no está preparado.",
+      "connectionError": "No se ha podido contactar con el puesto de herramientas."
     }
   }
 }
