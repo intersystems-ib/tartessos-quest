@@ -402,7 +402,7 @@ ClassMethod ValidateExercise4() As %Status
         Set hall.Code = "HALL-VALIDATION"
         Set hall.Name = "Validation Hall"
         Set hall.Description = "Temporary hall used by validation"
-        Set hall.Level = 1
+        Set hall.FloorLevel = 1
         Set hall.IsSealed = 0
 
         Do notebook.HallEntries.Insert(hall)
@@ -521,7 +521,7 @@ ClassMethod ValidateExercise5() As %Status
         Set hall.Code = "HALL-EX5"
         Set hall.Name = "Validation Hall"
         Set hall.Description = "Hall used by exercise 5 validation"
-        Set hall.Level = 1
+        Set hall.FloorLevel = 1
         Set hall.IsSealed = 0
         Set hall.HasMosaic = 1
 
@@ -539,7 +539,7 @@ ClassMethod ValidateExercise5() As %Status
         Set mortuary.Code = "MORT-EX5"
         Set mortuary.Name = "Validation Mortuary"
         Set mortuary.Description = "Mortuary used by exercise 5 validation"
-        Set mortuary.Level = 2
+        Set mortuary.FloorLevel = 2
         Set mortuary.IsSealed = 0
         Set mortuary.TombCount = 2
 
@@ -557,7 +557,7 @@ ClassMethod ValidateExercise5() As %Status
         Set storage.Code = "STOR-EX5"
         Set storage.Name = "Validation Storage"
         Set storage.Description = "Storage used by exercise 5 validation"
-        Set storage.Level = 2
+        Set storage.FloorLevel = 2
         Set storage.IsSealed = 0
         Set storage.ContainsSupplies = 1
 
@@ -575,7 +575,7 @@ ClassMethod ValidateExercise5() As %Status
         Set corridor.Code = "CORR-EX5"
         Set corridor.Name = "Validation Corridor"
         Set corridor.Description = "Corridor used by exercise 5 validation"
-        Set corridor.Level = 1
+        Set corridor.FloorLevel = 1
         Set corridor.IsSealed = 0
         Set corridor.Length = 10
         Set corridor.HasFork = 0
