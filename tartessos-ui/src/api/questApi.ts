@@ -36,6 +36,18 @@ export type Exercise3ValidationResponse = {
   errorMessage: string;
 };
 
+export type Exercise4ValidationResponse = {
+  success: boolean;
+  exercise: number;
+  validationCode: string;
+  notebook?: {
+    totalLines?: number;
+    firstChamberType?: string;
+  };
+  errorCode: string;
+  errorMessage: string;
+};
+
 export async function getQuestProgress(): Promise<QuestApiProgressResponse> {
   return irisRequest<QuestApiProgressResponse>("/progress");
 }
@@ -50,4 +62,8 @@ export async function validateExercise2(): Promise<Exercise2ValidationResponse> 
 
 export async function validateExercise3(): Promise<Exercise3ValidationResponse> {
   return irisRequest<Exercise3ValidationResponse>("/exercise/3/validate");
+}
+
+export async function validateExercise4(): Promise<Exercise4ValidationResponse> {
+  return irisRequest<Exercise4ValidationResponse>("/exercise/4/validate");
 }

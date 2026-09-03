@@ -12,6 +12,7 @@ import level03Image from "../../assets/images/level03.png";
 import styles from "./Level03ChamberModel.module.css";
 
 const LEVEL_ID = "level-03-chamber-model" as const;
+const NEXT_LEVEL_ID = "level-04-notebook" as const;
 
 type Exercise3ErrorPayload = {
   success?: boolean;
@@ -68,6 +69,10 @@ export function Level03ChamberModel() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleContinue() {
+    completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
   }
 
   return (
@@ -137,6 +142,12 @@ export function Level03ChamberModel() {
               label={t("levels.level03.activationCodeLabel")}
               code={validationCode}
             />
+            <button
+                className={styles.primaryButton}
+                onClick={handleContinue}
+                >
+                {t("levels.level03.continueButton")}
+            </button>
           </div>
         )}
       </section>
