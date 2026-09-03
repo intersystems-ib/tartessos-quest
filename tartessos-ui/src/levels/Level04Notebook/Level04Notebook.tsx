@@ -12,6 +12,7 @@ import level04Image from "../../assets/images/level04.png";
 import styles from "./Level04Notebook.module.css";
 
 const LEVEL_ID = "level-04-notebook" as const;
+const NEXT_LEVEL_ID = "level-05-persistent-chambers" as const;
 
 type Exercise4ErrorPayload = {
   success?: boolean;
@@ -107,6 +108,10 @@ export function Level04Notebook() {
     }
   }
 
+  function handleContinue() {
+    completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
+}
+
   return (
     <GameFrame>
       <div className={styles.scene}>
@@ -178,6 +183,12 @@ export function Level04Notebook() {
               label={t("levels.level04.activationCodeLabel")}
               code={validationCode}
             />
+            <button
+                className={styles.primaryButton}
+                onClick={handleContinue}
+                >
+                {t("levels.level04.continueButton")}
+            </button>
           </div>
         )}
       </section>

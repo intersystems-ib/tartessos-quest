@@ -4,6 +4,7 @@ export type LevelId =
   | "level-02-excavation-tools"
   | "level-03-chamber-model"
   | "level-04-notebook"
+  | "level-05-persistent-chambers"
   | "level-01-iris-intro"
   | "level-02-objectscript-basics"
   | "level-03-debugging"

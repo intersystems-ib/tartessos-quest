@@ -48,6 +48,20 @@ export type Exercise4ValidationResponse = {
   errorMessage: string;
 };
 
+export type Exercise5ValidationResponse = {
+  success: boolean;
+  exercise: number;
+  validationCode: string;
+  persistentChambers?: {
+    hallRelevant?: boolean;
+    mortuaryRelevant?: boolean;
+    storageRelevant?: boolean;
+    corridorRelevant?: boolean;
+  };
+  errorCode: string;
+  errorMessage: string;
+};
+
 export async function getQuestProgress(): Promise<QuestApiProgressResponse> {
   return irisRequest<QuestApiProgressResponse>("/progress");
 }
@@ -66,4 +80,8 @@ export async function validateExercise3(): Promise<Exercise3ValidationResponse> 
 
 export async function validateExercise4(): Promise<Exercise4ValidationResponse> {
   return irisRequest<Exercise4ValidationResponse>("/exercise/4/validate");
+}
+
+export async function validateExercise5(): Promise<Exercise5ValidationResponse> {
+  return irisRequest<Exercise5ValidationResponse>("/exercise/5/validate");
 }
