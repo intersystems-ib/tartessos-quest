@@ -91,11 +91,11 @@
       "imageAlt": "Pasillo subterráneo con accesos a varias cámaras y un derrumbe central",
       "captionInitial": "El primer pasillo del hipogeo se divide en cámaras todavía sin clasificar.",
       "captionCompleted": "El plano inicial de las cámaras ha sido ordenado.",
-      "title": "EL PLANO DE LAS CÁMARAS",
+      "title": "DESCUBRIENDO LAS CÁMARAS",
       "paragraph1": "El descenso conduce a un pasillo de piedra. A ambos lados se abren accesos oscuros, mientras un derrumbe bloquea el camino central.",
       "paragraph2": "Las marcas de los muros sugieren que no todas las cámaras cumplían la misma función. Algunas parecen corredores, otras salas de reunión, otras espacios funerarios o almacenes sellados.",
       "paragraph3": "Antes de avanzar, la expedición debe ordenar el primer mapa de las ruinas y clasificar cada tipo de cámara.",
-      "reviewButton": "REVISAR PLANO",
+      "reviewButton": "REVISAR CÁMARAS",
       "reviewingButton": "REVISANDO...",
       "helpButton": "AYUDA",
       "helpTitle": "Cómo definir el modelo de cámaras",
@@ -112,12 +112,17 @@
       "helpExpectedTitle": "Resultado esperado",
       "helpExpectedText": "La validación comprobará que existen las clases, que la herencia es correcta y que las propiedades tienen los tipos y valores iniciales esperados.",
       "helpCloseButton": "CERRAR",
-      "successTitle": "Plano ordenado",
+      "successTitle": "Tipos de cámaras reconocidos",
       "successMessage": "El primer modelo de cámaras ha sido reconocido.",
       "baseClassLabel": "Clase base",
       "activationCodeLabel": "Código de validación",
-      "genericValidationError": "El plano de las cámaras todavía no está completo.",
-      "connectionError": "No se ha podido contactar con el puesto cartográfico."
+      "genericValidationError": "No se han reconocido todos los tipos de cámaras.",
+      "connectionError": "No se ha podido contactar con el jefe de la excavación.",
+      "recognizedChambersIntro": "Se han identificado los siguientes tipos de cámaras en el yacimiento:",
+      "chamberTypeCorridor": "Pasillos",
+      "chamberTypeHall": "Salones",
+      "chamberTypeMortuary": "Cámaras mortuorias",
+      "chamberTypeStorage": "Cámaras de almacenamiento"
     }
   }
 }

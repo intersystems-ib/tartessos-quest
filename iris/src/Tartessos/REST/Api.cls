@@ -23,6 +23,10 @@ Parameter EXERCISE3CODE = "TQ03C3";
 
 Parameter EXERCISE3LEVEL = "level-03-chamber-model";
 
+Parameter EXERCISE4CODE = "TQ04D4";
+
+Parameter EXERCISE4LEVEL = "level-04-notebook";
+
 XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
 {
 <Routes>
@@ -30,6 +34,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/exercise/1/validate" Method="GET" Call="ValidateExercise1"/>
     <Route Url="/exercise/2/validate" Method="GET" Call="ValidateExercise2"/>
     <Route Url="/exercise/3/validate" Method="GET" Call="ValidateExercise3"/>
+    <Route Url="/exercise/4/validate" Method="GET" Call="ValidateExercise4"/>
 </Routes>
 }
 
@@ -333,6 +338,133 @@ ClassMethod ValidateDerivedChamberClass(className As %String, firstProperty As %
     }
 
     Return $$$OK
+}
+
+ClassMethod ValidateExercise4() As %Status
+{
+    Set %response.ContentType = "application/json; charset=utf-8"
+
+    Set className = "Tartessos.Quest.Notebook"
+
+    If '$Data(^notebook) {
+        Return ..WriteError(400, "NOTEBOOK_GLOBAL_NOT_FOUND", "The ^notebook global was not found", 4)
+    }
+
+    If '$Data(^notebook("totalLines")) {
+        Return ..WriteError(400, "NOTEBOOK_TOTAL_LINES_NOT_FOUND", "The ^notebook(""totalLines"") value was not found", 4)
+    }
+
+    If '$Data(^notebook("firstChamberType")) {
+        Return ..WriteError(400, "NOTEBOOK_FIRST_CHAMBER_TYPE_NOT_FOUND", "The ^notebook(""firstChamberType"") value was not found", 4)
+    }
+
+    If +$Get(^notebook("totalLines")) '= 1 {
+        Return ..WriteError(400, "NOTEBOOK_GLOBAL_TOTAL_LINES_INVALID", "The ^notebook(""totalLines"") value is invalid", 4)
+    }
+
+    If $Get(^notebook("firstChamberType")) '= "Hall" {
+        Return ..WriteError(400, "NOTEBOOK_GLOBAL_CHAMBER_TYPE_INVALID", "The ^notebook(""firstChamberType"") value is invalid", 4)
+    }
+
+    If '..ClassExists(className) {
+        Return ..WriteError(400, "NOTEBOOK_CLASS_NOT_FOUND", "The Notebook class was not found", 4)
+    }
+
+    If '..ClassExtends(className, "%RegisteredObject") {
+        Return ..WriteError(400, "NOTEBOOK_INVALID_SUPERCLASS", "Notebook must extend %RegisteredObject", 4)
+    }
+
+    If '..CollectionPropertyMatches(className, "HallEntries", "list", "Tartessos.Quest.Chambers.Hall") {
+        Return ..WriteError(400, "NOTEBOOK_HALLENTRIES_PROPERTY_INVALID", "Notebook must define HallEntries as list Of Tartessos.Quest.Chambers.Hall", 4)
+    }
+
+    If '..CollectionPropertyMatches(className, "MortuaryEntries", "list", "Tartessos.Quest.Chambers.Mortuary") {
+        Return ..WriteError(400, "NOTEBOOK_MORTUARYENTRIES_PROPERTY_INVALID", "Notebook must define MortuaryEntries as list Of Tartessos.Quest.Chambers.Mortuary", 4)
+    }
+
+    If '..CollectionPropertyMatches(className, "StorageEntries", "list", "Tartessos.Quest.Chambers.Storage") {
+        Return ..WriteError(400, "NOTEBOOK_STORAGEENTRIES_PROPERTY_INVALID", "Notebook must define StorageEntries as list Of Tartessos.Quest.Chambers.Storage", 4)
+    }
+
+    If '..CollectionPropertyMatches(className, "CorridorEntries", "list", "Tartessos.Quest.Chambers.Corridor") {
+        Return ..WriteError(400, "NOTEBOOK_CORRIDORENTRIES_PROPERTY_INVALID", "Notebook must define CorridorEntries as list Of Tartessos.Quest.Chambers.Corridor", 4)
+    }
+
+    Try {
+        Set notebook = $CLASSMETHOD(className, "%New")
+        Set hall = $CLASSMETHOD("Tartessos.Quest.Chambers.Hall", "%New")
+
+        Set hall.Code = "HALL-VALIDATION"
+        Set hall.Name = "Validation Hall"
+        Set hall.Description = "Temporary hall used by validation"
+        Set hall.Level = 1
+        Set hall.IsSealed = 0
+
+        Do notebook.HallEntries.Insert(hall)
+
+        Set totalLines = notebook.GetTotalLines()
+        Set chamberType = $CLASSMETHOD(className, "GetChamberType", hall)
+    } Catch ex {
+        Return ..WriteError(500, "NOTEBOOK_BEHAVIOR_ERROR", ex.DisplayString(), 4)
+    }
+
+    If totalLines '= 1 {
+        Return ..WriteError(400, "NOTEBOOK_TOTAL_LINES_METHOD_FAILED", "GetTotalLines() must return the total number of entries in the notebook", 4)
+    }
+
+    If chamberType '= "Hall" {
+        Return ..WriteError(400, "NOTEBOOK_CHAMBER_TYPE_METHOD_FAILED", "GetChamberType() must return Hall for a Hall instance", 4)
+    }
+
+    Set ^progress = ..#EXERCISE4LEVEL
+    Set ^progress("completed", ..#EXERCISE4LEVEL) = 1
+    Set ^progress("activationCodes", ..#EXERCISE4LEVEL) = ..#EXERCISE4CODE
+
+    Set notebookInfo = {
+        "totalLines": (totalLines),
+        "firstChamberType": (chamberType)
+    }
+
+    Set response = {
+        "success": true,
+        "exercise": 4,
+        "validationCode": (..#EXERCISE4CODE),
+        "notebook": (notebookInfo),
+        "errorCode": "",
+        "errorMessage": ""
+    }
+
+    Write response.%ToJSON()
+
+    Return $$$OK
+}
+
+ClassMethod CollectionPropertyMatches(className As %String, propertyName As %String, expectedCollection As %String, expectedType As %String) As %Boolean
+{
+    Set actualType = ""
+    Set actualCollection = ""
+
+    &sql(
+        SELECT Type, Collection
+        INTO :actualType, :actualCollection
+        FROM %Dictionary.CompiledProperty
+        WHERE parent->Name = :className
+        AND Name = :propertyName
+    )
+
+    If SQLCODE '= 0 {
+        Return 0
+    }
+
+    If $ZCONVERT(actualCollection,"L") '= $ZCONVERT(expectedCollection,"L") {
+        Return 0
+    }
+
+    If '..TypeMatches(actualType, expectedType) {
+        Return 0
+    }
+
+    Return 1
 }
 
 ClassMethod ClassExists(className As %String) As %Boolean

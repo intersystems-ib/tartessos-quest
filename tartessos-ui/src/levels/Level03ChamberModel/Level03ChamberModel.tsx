@@ -21,11 +21,6 @@ type Exercise3ErrorPayload = {
   errorMessage?: string;
 };
 
-type ChamberModel = {
-  baseClass?: string;
-  derivedClasses?: string[];
-};
-
 export function Level03ChamberModel() {
   const { t } = useTranslation();
   const { completeLevel, isLevelCompleted, progress } = useGame();
@@ -38,7 +33,6 @@ export function Level03ChamberModel() {
   const [validationCode, setValidationCode] = useState<string | null>(
     alreadyCompleted ? savedCode : null,
   );
-  const [model, setModel] = useState<ChamberModel | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleReviewMap() {
@@ -57,7 +51,6 @@ export function Level03ChamberModel() {
       }
 
       setValidationCode(response.validationCode);
-      setModel(response.model ?? null);
 
       completeLevel(LEVEL_ID, response.validationCode);
     } catch (error) {
@@ -129,26 +122,16 @@ export function Level03ChamberModel() {
 
             <p>{t("levels.level03.successMessage")}</p>
 
-            {model && (
-              <div className={styles.modelSummary}>
-                {model.baseClass && (
-                  <p>
-                    {t("levels.level03.baseClassLabel")}:{" "}
-                    <code>{model.baseClass}</code>
-                  </p>
-                )}
+            <div className={styles.modelSummary}>
+                <p>{t("levels.level03.recognizedChambersIntro")}</p>
 
-                {model.derivedClasses && model.derivedClasses.length > 0 && (
-                  <ul className={styles.classList}>
-                    {model.derivedClasses.map((className) => (
-                      <li key={className}>
-                        <code>{className}</code>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
+                <ul className={styles.classList}>
+                    <li>{t("levels.level03.chamberTypeCorridor")}</li>
+                    <li>{t("levels.level03.chamberTypeHall")}</li>
+                    <li>{t("levels.level03.chamberTypeMortuary")}</li>
+                    <li>{t("levels.level03.chamberTypeStorage")}</li>
+                </ul>
+            </div>
 
             <ActivationCode
               label={t("levels.level03.activationCodeLabel")}
