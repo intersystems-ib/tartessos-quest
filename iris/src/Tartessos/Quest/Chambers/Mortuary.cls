@@ -8,6 +8,8 @@ Property TombCount As %Integer [ InitialExpression = 0 ];
 /// Indicates whether the chamber is considered sacred.
 Property IsSacred As %Boolean [ InitialExpression = 1 ];
 
+Relationship Sarcophagi As Tartessos.Quest.Finds.Sarcophagus [ Cardinality = many, Inverse = Mortuary ];
+
 Storage Default
 {
 <Data name="MortuaryDefaultData">

@@ -35,6 +35,14 @@ Parameter EXERCISE6CODE = "TQ06F6";
 
 Parameter EXERCISE6LEVEL = "level-06-connected-model";
 
+Parameter EXERCISE7CODE = "TQ07G7";
+
+Parameter EXERCISE7LEVEL = "level-07-sql-queries";
+
+Parameter EXERCISE7EXPECTEDINSCRIPTIONS = 5;
+
+Parameter EXERCISE7EXPECTEDGOLDDETAILS = 2;
+
 XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
 {
 <Routes>
@@ -45,6 +53,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/exercise/4/validate" Method="GET" Call="ValidateExercise4"/>
     <Route Url="/exercise/5/validate" Method="GET" Call="ValidateExercise5"/>
     <Route Url="/exercise/6/validate" Method="GET" Call="ValidateExercise6"/>
+    <Route Url="/exercise/7/validate" Method="GET" Call="ValidateExercise7"/>
 </Routes>
 }
 
@@ -747,6 +756,400 @@ ClassMethod ValidateExercise6() As %Status
     Return $$$OK
 }
 
+ClassMethod ValidateExercise7() As %Status
+{
+    Set %response.ContentType = "application/json; charset=utf-8"
+
+    Set utilsClass = "Tartessos.Quest.ExcavationUtils"
+    Set prefix = "EX7-"_$JOB_"-"_$RANDOM(1000000)_"-"
+
+    If '..ClassExists(utilsClass) {
+        Return ..WriteError(400, "SQL_UTILS_CLASS_NOT_FOUND", "ExcavationUtils class was not found", 7)
+    }
+
+    If '..ClassExists("Tartessos.Quest.Chambers.Mortuary") {
+        Return ..WriteError(400, "EXERCISE7_DEPENDENCY_MISSING", "Mortuary class was not found", 7)
+    }
+
+    If '..ClassExists("Tartessos.Quest.Finds.Sarcophagus") {
+        Return ..WriteError(400, "EXERCISE7_DEPENDENCY_MISSING", "Sarcophagus class was not found", 7)
+    }
+
+    If '..ClassExists("Tartessos.Quest.Finds.Offering") {
+        Return ..WriteError(400, "EXERCISE7_DEPENDENCY_MISSING", "Offering class was not found", 7)
+    }
+
+    Set status = ..SetupExercise7Data(prefix, .createdIds)
+
+    If '$System.Status.IsOK(status) {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(500, "EXERCISE7_DATA_SETUP_FAILED", $System.Status.GetErrorText(status), 7)
+    }
+
+    Try {
+        Set totalInscriptions = $CLASSMETHOD(utilsClass, "CountInscriptions", prefix)
+    } Catch ex {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(500, "COUNT_INSCRIPTIONS_METHOD_ERROR", ex.DisplayString(), 7)
+    }
+
+    Try {
+        Set goldDetails = $CLASSMETHOD(utilsClass, "GetGoldOfferingMortuaryDetails", prefix)
+    } Catch ex {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(500, "GOLD_MORTUARY_DETAILS_METHOD_ERROR", ex.DisplayString(), 7)
+    }
+
+    If totalInscriptions '= ..#EXERCISE7EXPECTEDINSCRIPTIONS {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(400, "COUNT_INSCRIPTIONS_INVALID_RESULT", "CountInscriptions returned an invalid result", 7)
+    }
+
+    If '$ISOBJECT(goldDetails) {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(400, "GOLD_MORTUARY_DETAILS_INVALID_RESULT", "GetGoldOfferingMortuaryDetails must return a list of strings", 7)
+    }
+
+    If goldDetails.Count() '= ..#EXERCISE7EXPECTEDGOLDDETAILS {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(400, "GOLD_MORTUARY_DETAILS_INVALID_RESULT", "The list of mortuaries with gold offerings is not correct", 7)
+    }
+
+    Set expectedFirst = "floorLevel=3;code="_prefix_"M1;description=Mortuary with gold offerings"
+    Set expectedSecond = "floorLevel=5;code="_prefix_"M3;description=Deep mortuary with gold offering"
+
+    If '..ListContainsString(goldDetails, expectedFirst) {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(400, "GOLD_MORTUARY_DETAILS_INVALID_RESULT", "The first expected mortuary detail was not found", 7)
+    }
+
+    If '..ListContainsString(goldDetails, expectedSecond) {
+        Do ..CleanupExercise7Data(.createdIds)
+        Return ..WriteError(400, "GOLD_MORTUARY_DETAILS_INVALID_RESULT", "The second expected mortuary detail was not found", 7)
+    }
+
+    Set detailsArray = ..ListToDynamicArray(goldDetails)
+
+    Set cleanupStatus = ..CleanupExercise7Data(.createdIds)
+
+    If '$System.Status.IsOK(cleanupStatus) {
+        Return ..WriteError(500, "EXERCISE7_DATA_CLEANUP_FAILED", $System.Status.GetErrorText(cleanupStatus), 7)
+    }
+
+    Set ^progress = ..#EXERCISE7LEVEL
+    Set ^progress("completed", ..#EXERCISE7LEVEL) = 1
+    Set ^progress("activationCodes", ..#EXERCISE7LEVEL) = ..#EXERCISE7CODE
+
+    Set queries = {
+        "totalInscriptions": true,
+        "goldOfferingMortuaryDetails": true
+    }
+
+    Set values = {
+        "totalInscriptions": (totalInscriptions),
+        "goldOfferingMortuaryDetails": (detailsArray)
+    }
+
+    Set response = {
+        "success": true,
+        "exercise": 7,
+        "validationCode": (..#EXERCISE7CODE),
+        "queries": (queries),
+        "values": (values),
+        "errorCode": "",
+        "errorMessage": ""
+    }
+
+    Write response.%ToJSON()
+
+    Return $$$OK
+}
+
+ClassMethod SetupExercise7Data(prefix As %String, ByRef createdIds) As %Status
+{
+    Kill createdIds
+
+    Try {
+        Set status = ..CreateExercise7Mortuary(prefix, "M1", 2, 3, "Mortuary with gold offerings", .mortuary1Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("mortuary",1) = mortuary1Id
+        Set mortuary1 = ##class(Tartessos.Quest.Chambers.Mortuary).%OpenId(mortuary1Id)
+
+        Set status = ..CreateExercise7Mortuary(prefix, "M2", 1, 4, "Mortuary without gold offerings", .mortuary2Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("mortuary",2) = mortuary2Id
+        Set mortuary2 = ##class(Tartessos.Quest.Chambers.Mortuary).%OpenId(mortuary2Id)
+
+        Set status = ..CreateExercise7Mortuary(prefix, "M3", 3, 5, "Deep mortuary with gold offering", .mortuary3Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("mortuary",3) = mortuary3Id
+        Set mortuary3 = ##class(Tartessos.Quest.Chambers.Mortuary).%OpenId(mortuary3Id)
+
+        Set status = ..CreateExercise7Sarcophagus(mortuary1, "Owner M1 S1", "Main sarcophagus inscription", .sarcophagus1Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("sarcophagus",1) = sarcophagus1Id
+        Set sarcophagus1 = ##class(Tartessos.Quest.Finds.Sarcophagus).%OpenId(sarcophagus1Id)
+
+        Set status = ..CreateExercise7Sarcophagus(mortuary1, "Owner M1 S2", "", .sarcophagus2Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("sarcophagus",2) = sarcophagus2Id
+        Set sarcophagus2 = ##class(Tartessos.Quest.Finds.Sarcophagus).%OpenId(sarcophagus2Id)
+
+        Set status = ..CreateExercise7Sarcophagus(mortuary2, "Owner M2 S1", "Secondary sarcophagus inscription", .sarcophagus3Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("sarcophagus",3) = sarcophagus3Id
+        Set sarcophagus3 = ##class(Tartessos.Quest.Finds.Sarcophagus).%OpenId(sarcophagus3Id)
+
+        Set status = ..CreateExercise7Sarcophagus(mortuary3, "Owner M3 S1", "", .sarcophagus4Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("sarcophagus",4) = sarcophagus4Id
+        Set sarcophagus4 = ##class(Tartessos.Quest.Finds.Sarcophagus).%OpenId(sarcophagus4Id)
+
+        Set status = ..CreateExercise7Offering(sarcophagus1, "gold", "jewel", "Gold offering inscription", .offering1Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("offering",1) = offering1Id
+
+        Set status = ..CreateExercise7Offering(sarcophagus1, "clay", "vessel", "", .offering2Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("offering",2) = offering2Id
+
+        Set status = ..CreateExercise7Offering(sarcophagus2, "gold", "ritual", "Ritual gold offering inscription", .offering3Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("offering",3) = offering3Id
+
+        Set status = ..CreateExercise7Offering(sarcophagus3, "bronze", "weapon", "Bronze weapon inscription", .offering4Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("offering",4) = offering4Id
+
+        Set status = ..CreateExercise7Offering(sarcophagus4, "gold", "tool", "", .offering5Id)
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set createdIds("offering",5) = offering5Id
+    } Catch ex {
+        Return $System.Status.Error(5001, ex.DisplayString())
+    }
+
+    Return $$$OK
+}
+
+ClassMethod CreateExercise7Mortuary(prefix As %String, suffix As %String, tombCount As %Integer, floorLevel As %Integer, description As %String, ByRef id As %String) As %Status
+{
+    Set mortuary = ##class(Tartessos.Quest.Chambers.Mortuary).%New()
+
+    Set mortuary.Code = prefix_suffix
+    Set mortuary.Name = "Exercise 7 Mortuary "_suffix
+    Set mortuary.Description = description
+    Set mortuary.Level = floorLevel
+    Set mortuary.IsSealed = 0
+    Set mortuary.IsRelevant = 1
+    Set mortuary.TombCount = tombCount
+    Set mortuary.IsSacred = 1
+
+    Set status = mortuary.%Save()
+
+    If '$System.Status.IsOK(status) {
+        Return status
+    }
+
+    Set id = mortuary.%Id()
+
+    Return $$$OK
+}
+
+ClassMethod CreateExercise7Sarcophagus(mortuary As Tartessos.Quest.Chambers.Mortuary, owner As %String, inscriptions As %String, ByRef id As %String) As %Status
+{
+    If '$ISOBJECT(mortuary) {
+        Return $System.Status.Error(5001, "Mortuary object is required")
+    }
+
+    Set sarcophagus = ##class(Tartessos.Quest.Finds.Sarcophagus).%New()
+
+    Set sarcophagus.Owner = owner
+    Set sarcophagus.StateConservation = "intact"
+    Set sarcophagus.Material = "stone"
+    Set sarcophagus.Inscriptions = inscriptions
+    Set sarcophagus.Mortuary = mortuary
+
+    Set status = sarcophagus.%Save()
+
+    If '$System.Status.IsOK(status) {
+        Return status
+    }
+
+    Set id = sarcophagus.%Id()
+
+    Return $$$OK
+}
+
+ClassMethod CreateExercise7Offering(sarcophagus As Tartessos.Quest.Finds.Sarcophagus, material As %String, classification As %String, inscription As %String, ByRef id As %String) As %Status
+{
+    If '$ISOBJECT(sarcophagus) {
+        Return $System.Status.Error(5001, "Sarcophagus object is required")
+    }
+
+    Set offering = ##class(Tartessos.Quest.Finds.Offering).%New()
+
+    Set offering.Material = material
+    Set offering.Classification = classification
+    Set offering.Description = "Temporary offering created for exercise 7 validation"
+    Set offering.Inscription = inscription
+    Set offering.Sarcophagus = sarcophagus
+
+    Set status = offering.%Save()
+
+    If '$System.Status.IsOK(status) {
+        Return status
+    }
+
+    Set id = offering.%Id()
+
+    Return $$$OK
+}
+
+ClassMethod ListContainsString(items As %ListOfDataTypes, expected As %String) As %Boolean
+{
+    If '$ISOBJECT(items) {
+        Return 0
+    }
+
+    For index = 1:1:items.Count() {
+        If items.GetAt(index) = expected {
+            Return 1
+        }
+    }
+
+    Return 0
+}
+
+ClassMethod ListToDynamicArray(items As %ListOfDataTypes) As %DynamicArray
+{
+    Set array = []
+
+    If '$ISOBJECT(items) {
+        Return array
+    }
+
+    For index = 1:1:items.Count() {
+        Do array.%Push(items.GetAt(index))
+    }
+
+    Return array
+}
+
+ClassMethod CleanupExercise7Data(ByRef createdIds) As %Status
+{
+    Set cleanupStatus = $$$OK
+
+    Set idKey = ""
+
+    For {
+        Set idKey = $Order(createdIds("offering", idKey))
+
+        If idKey = "" {
+            Quit
+        }
+
+        Set id = createdIds("offering", idKey)
+
+        If id '= "" {
+            Set status = ##class(Tartessos.Quest.Finds.Offering).%DeleteId(id)
+
+            If '$System.Status.IsOK(status) {
+                Set cleanupStatus = status
+            }
+        }
+    }
+
+    Set idKey = ""
+
+    For {
+        Set idKey = $Order(createdIds("sarcophagus", idKey))
+
+        If idKey = "" {
+            Quit
+        }
+
+        Set id = createdIds("sarcophagus", idKey)
+
+        If id '= "" {
+            Set status = ##class(Tartessos.Quest.Finds.Sarcophagus).%DeleteId(id)
+
+            If '$System.Status.IsOK(status) {
+                Set cleanupStatus = status
+            }
+        }
+    }
+
+    Set idKey = ""
+
+    For {
+        Set idKey = $Order(createdIds("mortuary", idKey))
+
+        If idKey = "" {
+            Quit
+        }
+
+        Set id = createdIds("mortuary", idKey)
+
+        If id '= "" {
+            Set status = ##class(Tartessos.Quest.Chambers.Mortuary).%DeleteId(id)
+
+            If '$System.Status.IsOK(status) {
+                Set cleanupStatus = status
+            }
+        }
+    }
+
+    Return cleanupStatus
+}
+
 ClassMethod ValidateSarcophagusValidationRules() As %Status
 {
     Try {
@@ -754,7 +1157,7 @@ ClassMethod ValidateSarcophagusValidationRules() As %Status
         Set mortuary.Code = "MORT-EX6-VAL"
         Set mortuary.Name = "Validation Mortuary"
         Set mortuary.Description = "Temporary mortuary used for validation"
-        Set mortuary.Level = 3
+        Set mortuary.FloorLevel = 3
         Set mortuary.IsSealed = 0
         Set mortuary.IsRelevant = 1
         Set mortuary.TombCount = 2
@@ -793,7 +1196,7 @@ ClassMethod ValidateOfferingValidationRules() As %Status
         Set mortuary.Code = "MORT-EX6-OFF"
         Set mortuary.Name = "Offering Mortuary"
         Set mortuary.Description = "Temporary mortuary used for offering validation"
-        Set mortuary.Level = 3
+        Set mortuary.FloorLevel = 3
         Set mortuary.IsSealed = 0
         Set mortuary.IsRelevant = 1
         Set mortuary.TombCount = 2
@@ -852,7 +1255,7 @@ ClassMethod ValidateMortuarySarcophagusOfferingBehavior() As %Status
         Set mortuary.Code = "MORT-EX6"
         Set mortuary.Name = "Connected Mortuary"
         Set mortuary.Description = "Mortuary used by exercise 6 validation"
-        Set mortuary.Level = 4
+        Set mortuary.FloorLevel = 4
         Set mortuary.IsSealed = 0
         Set mortuary.IsRelevant = 1
         Set mortuary.TombCount = 2
