@@ -31,6 +31,10 @@ Parameter EXERCISE5CODE = "TQ05E5";
 
 Parameter EXERCISE5LEVEL = "level-05-persistent-chambers";
 
+Parameter EXERCISE6CODE = "TQ06F6";
+
+Parameter EXERCISE6LEVEL = "level-06-connected-model";
+
 XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
 {
 <Routes>
@@ -40,6 +44,7 @@ XData UrlMap [ XMLNamespace = "https://www.intersystems.com/urlmap" ]
     <Route Url="/exercise/3/validate" Method="GET" Call="ValidateExercise3"/>
     <Route Url="/exercise/4/validate" Method="GET" Call="ValidateExercise4"/>
     <Route Url="/exercise/5/validate" Method="GET" Call="ValidateExercise5"/>
+    <Route Url="/exercise/6/validate" Method="GET" Call="ValidateExercise6"/>
 </Routes>
 }
 
@@ -614,6 +619,403 @@ ClassMethod ValidateExercise5() As %Status
     Return $$$OK
 }
 
+ClassMethod ValidateExercise6() As %Status
+{
+    Set %response.ContentType = "application/json; charset=utf-8"
+
+    Set mortuaryClass = "Tartessos.Quest.Chambers.Mortuary"
+    Set sarcophagusClass = "Tartessos.Quest.Finds.Sarcophagus"
+    Set offeringClass = "Tartessos.Quest.Finds.Offering"
+
+    If '..ClassExists(sarcophagusClass) {
+        Return ..WriteError(400, "SARCOPHAGUS_CLASS_NOT_FOUND", "Sarcophagus class was not found", 6)
+    }
+
+    If '..ClassExists(offeringClass) {
+        Return ..WriteError(400, "OFFERING_CLASS_NOT_FOUND", "Offering class was not found", 6)
+    }
+
+    If '..ClassExtends(sarcophagusClass, "%Persistent") {
+        Return ..WriteError(400, "SARCOPHAGUS_NOT_PERSISTENT", "Sarcophagus must extend %Persistent", 6)
+    }
+
+    If '..ClassExtends(offeringClass, "%Persistent") {
+        Return ..WriteError(400, "OFFERING_NOT_PERSISTENT", "Offering must extend %Persistent", 6)
+    }
+
+    If '..PropertyMatches(sarcophagusClass, "Owner", "%String", 1, "") {
+        Return ..WriteError(400, "SARCOPHAGUS_OWNER_PROPERTY_INVALID", "Sarcophagus must define Owner as required %String", 6)
+    }
+
+    If '..PropertyMatches(sarcophagusClass, "StateConservation", "%String", 1, "") {
+        Return ..WriteError(400, "SARCOPHAGUS_STATE_PROPERTY_INVALID", "Sarcophagus must define StateConservation as required %String", 6)
+    }
+
+    If '..PropertyMatches(sarcophagusClass, "Material", "%String", 1, "") {
+        Return ..WriteError(400, "SARCOPHAGUS_MATERIAL_PROPERTY_INVALID", "Sarcophagus must define Material as required %String", 6)
+    }
+
+    If '..PropertyMatches(sarcophagusClass, "Inscriptions", "%String", "", "") {
+        Return ..WriteError(400, "SARCOPHAGUS_INSCRIPTIONS_PROPERTY_INVALID", "Sarcophagus must define Inscriptions as %String", 6)
+    }
+
+    If '..PropertyMatches(offeringClass, "Material", "%String", 1, "") {
+        Return ..WriteError(400, "OFFERING_MATERIAL_PROPERTY_INVALID", "Offering must define Material as required %String", 6)
+    }
+
+    If '..PropertyMatches(offeringClass, "Classification", "%String", 1, "") {
+        Return ..WriteError(400, "OFFERING_CLASSIFICATION_PROPERTY_INVALID", "Offering must define Classification as required %String", 6)
+    }
+
+    If '..PropertyMatches(offeringClass, "Description", "%String", "", "") {
+        Return ..WriteError(400, "OFFERING_DESCRIPTION_PROPERTY_INVALID", "Offering must define Description as %String", 6)
+    }
+
+    If '..PropertyMatches(offeringClass, "Inscription", "%String", "", "") {
+        Return ..WriteError(400, "OFFERING_INSCRIPTION_PROPERTY_INVALID", "Offering must define Inscription as %String", 6)
+    }
+
+    If '..RelationshipMatches(mortuaryClass, "Sarcophagi", sarcophagusClass, "many", "Mortuary") {
+        Return ..WriteError(400, "MORTUARY_SARCOPHAGI_RELATIONSHIP_INVALID", "Mortuary must define Sarcophagi as a many relationship to Sarcophagus", 6)
+    }
+
+    If '..RelationshipMatches(sarcophagusClass, "Mortuary", mortuaryClass, "one", "Sarcophagi") {
+        Return ..WriteError(400, "SARCOPHAGUS_MORTUARY_RELATIONSHIP_INVALID", "Sarcophagus must define Mortuary as a one relationship to Mortuary", 6)
+    }
+
+    If '..RelationshipMatches(sarcophagusClass, "Offerings", offeringClass, "many", "Sarcophagus") {
+        Return ..WriteError(400, "SARCOPHAGUS_OFFERINGS_RELATIONSHIP_INVALID", "Sarcophagus must define Offerings as a many relationship to Offering", 6)
+    }
+
+    If '..RelationshipMatches(offeringClass, "Sarcophagus", sarcophagusClass, "one", "Offerings") {
+        Return ..WriteError(400, "OFFERING_SARCOPHAGUS_RELATIONSHIP_INVALID", "Offering must define Sarcophagus as a one relationship to Sarcophagus", 6)
+    }
+
+    If '..IndexOnPropertyMatches(offeringClass, "ClassificationIdx", "Classification") {
+        Return ..WriteError(400, "OFFERING_CLASSIFICATION_INDEX_MISSING", "Offering must define an index on Classification", 6)
+    }
+
+    Set status = ..ValidateSarcophagusValidationRules()
+
+    If '$System.Status.IsOK(status) {
+        Return ..WriteError(400, "SARCOPHAGUS_VALIDATION_FAILED", $System.Status.GetErrorText(status), 6)
+    }
+
+    Set status = ..ValidateOfferingValidationRules()
+
+    If '$System.Status.IsOK(status) {
+        Return ..WriteError(400, "OFFERING_VALIDATION_FAILED", $System.Status.GetErrorText(status), 6)
+    }
+
+    Set status = ..ValidateMortuarySarcophagusOfferingBehavior()
+
+    If '$System.Status.IsOK(status) {
+        Return ..WriteError(400, "RELATIONSHIP_BEHAVIOR_FAILED", $System.Status.GetErrorText(status), 6)
+    }
+
+    Set ^progress = ..#EXERCISE6LEVEL
+    Set ^progress("completed", ..#EXERCISE6LEVEL) = 1
+    Set ^progress("activationCodes", ..#EXERCISE6LEVEL) = ..#EXERCISE6CODE
+
+    Set relationships = {
+        "mortuarySarcophagus": true,
+        "sarcophagusOffering": true
+    }
+
+    Set indexes = {
+        "offeringClassification": true
+    }
+
+    Set validations = {
+        "sarcophagus": true,
+        "offering": true
+    }
+
+    Set response = {
+        "success": true,
+        "exercise": 6,
+        "validationCode": (..#EXERCISE6CODE),
+        "relationships": (relationships),
+        "indexes": (indexes),
+        "validations": (validations),
+        "errorCode": "",
+        "errorMessage": ""
+    }
+
+    Write response.%ToJSON()
+
+    Return $$$OK
+}
+
+ClassMethod ValidateSarcophagusValidationRules() As %Status
+{
+    Try {
+        Set mortuary = ##class(Tartessos.Quest.Chambers.Mortuary).%New()
+        Set mortuary.Code = "MORT-EX6-VAL"
+        Set mortuary.Name = "Validation Mortuary"
+        Set mortuary.Description = "Temporary mortuary used for validation"
+        Set mortuary.Level = 3
+        Set mortuary.IsSealed = 0
+        Set mortuary.IsRelevant = 1
+        Set mortuary.TombCount = 2
+        Set mortuary.IsSacred = 1
+
+        Set status = mortuary.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set invalidSarcophagus = ##class(Tartessos.Quest.Finds.Sarcophagus).%New()
+        Set invalidSarcophagus.Owner = "Unknown"
+        Set invalidSarcophagus.StateConservation = "wrong-state"
+        Set invalidSarcophagus.Material = "stone"
+        Set invalidSarcophagus.Mortuary = mortuary
+
+        Set status = invalidSarcophagus.%ValidateObject()
+
+        Do ##class(Tartessos.Quest.Chambers.Mortuary).%DeleteId(mortuary.%Id())
+
+        If $System.Status.IsOK(status) {
+            Return $$$ERROR($$$GeneralError,"Sarcophagus accepted an invalid conservation state")
+        }
+    } Catch ex {
+        Return $$$ERROR($$$GeneralError,ex.DisplayString())
+    }
+
+    Return $$$OK
+}
+
+ClassMethod ValidateOfferingValidationRules() As %Status
+{
+    Try {
+        Set mortuary = ##class(Tartessos.Quest.Chambers.Mortuary).%New()
+        Set mortuary.Code = "MORT-EX6-OFF"
+        Set mortuary.Name = "Offering Mortuary"
+        Set mortuary.Description = "Temporary mortuary used for offering validation"
+        Set mortuary.Level = 3
+        Set mortuary.IsSealed = 0
+        Set mortuary.IsRelevant = 1
+        Set mortuary.TombCount = 2
+        Set mortuary.IsSacred = 1
+
+        Set status = mortuary.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set sarcophagus = ##class(Tartessos.Quest.Finds.Sarcophagus).%New()
+        Set sarcophagus.Owner = "Validation Owner"
+        Set sarcophagus.StateConservation = "intact"
+        Set sarcophagus.Material = "stone"
+        Set sarcophagus.Inscriptions = "Validation inscription"
+        Set sarcophagus.Mortuary = mortuary
+
+        Set status = sarcophagus.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Do ##class(Tartessos.Quest.Chambers.Mortuary).%DeleteId(mortuary.%Id())
+            Return status
+        }
+
+        Set invalidOffering = ##class(Tartessos.Quest.Finds.Offering).%New()
+        Set invalidOffering.Material = "gold"
+        Set invalidOffering.Classification = "invalid-classification"
+        Set invalidOffering.Description = "Invalid offering"
+        Set invalidOffering.Inscription = "None"
+        Set invalidOffering.Sarcophagus = sarcophagus
+
+        Set status = invalidOffering.%ValidateObject()
+
+        Do ##class(Tartessos.Quest.Finds.Sarcophagus).%DeleteId(sarcophagus.%Id())
+        Do ##class(Tartessos.Quest.Chambers.Mortuary).%DeleteId(mortuary.%Id())
+
+        If $System.Status.IsOK(status) {
+            Return $$$ERROR($$$GeneralError,"Offering accepted an invalid classification")
+        }
+    } Catch ex {
+        Return $$$ERROR($$$GeneralError,ex.DisplayString())
+    }
+
+    Return $$$OK
+}
+
+ClassMethod ValidateMortuarySarcophagusOfferingBehavior() As %Status
+{
+    Set mortuaryId = ""
+    Set sarcophagusId = ""
+    Set offeringId = ""
+
+    Try {
+        Set mortuary = ##class(Tartessos.Quest.Chambers.Mortuary).%New()
+        Set mortuary.Code = "MORT-EX6"
+        Set mortuary.Name = "Connected Mortuary"
+        Set mortuary.Description = "Mortuary used by exercise 6 validation"
+        Set mortuary.Level = 4
+        Set mortuary.IsSealed = 0
+        Set mortuary.IsRelevant = 1
+        Set mortuary.TombCount = 2
+        Set mortuary.IsSacred = 1
+
+        Set status = mortuary.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Return status
+        }
+
+        Set mortuaryId = mortuary.%Id()
+
+        Set sarcophagus = ##class(Tartessos.Quest.Finds.Sarcophagus).%New()
+        Set sarcophagus.Owner = "Validation Owner"
+        Set sarcophagus.StateConservation = "intact"
+        Set sarcophagus.Material = "stone"
+        Set sarcophagus.Inscriptions = "Validation inscription"
+        Set sarcophagus.Mortuary = mortuary
+
+        Set status = sarcophagus.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return status
+        }
+
+        Set sarcophagusId = sarcophagus.%Id()
+
+        Set offering = ##class(Tartessos.Quest.Finds.Offering).%New()
+        Set offering.Material = "gold"
+        Set offering.Classification = "jewel"
+        Set offering.Description = "Validation offering"
+        Set offering.Inscription = "Validation inscription"
+        Set offering.Sarcophagus = sarcophagus
+
+        Set status = offering.%Save()
+
+        If '$System.Status.IsOK(status) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return status
+        }
+
+        Set offeringId = offering.%Id()
+
+        Set savedSarcophagus = ##class(Tartessos.Quest.Finds.Sarcophagus).%OpenId(sarcophagusId)
+
+        If '$ISOBJECT(savedSarcophagus) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Sarcophagus could not be opened")
+        }
+
+        If '$ISOBJECT(savedSarcophagus.Mortuary) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Sarcophagus is not linked to Mortuary")
+        }
+
+        If savedSarcophagus.Mortuary.%Id() '= mortuaryId {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Sarcophagus is linked to the wrong Mortuary")
+        }
+
+        Set savedOffering = ##class(Tartessos.Quest.Finds.Offering).%OpenId(offeringId)
+
+        If '$ISOBJECT(savedOffering) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Offering could not be opened")
+        }
+
+        If '$ISOBJECT(savedOffering.Sarcophagus) {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Offering is not linked to Sarcophagus")
+        }
+
+        If savedOffering.Sarcophagus.%Id() '= sarcophagusId {
+            Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+            Return $$$ERROR($$$GeneralError,"Offering is linked to the wrong Sarcophagus")
+        }
+
+        Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+    } Catch ex {
+        Do ..CleanupExercise6Objects(mortuaryId, sarcophagusId, offeringId)
+        Return $$$ERROR($$$GeneralError,ex.DisplayString())
+    }
+
+    Return $$$OK
+}
+
+ClassMethod CleanupExercise6Objects(mortuaryId As %String = "", sarcophagusId As %String = "", offeringId As %String = "")
+{
+    If offeringId '= "" {
+        Do ##class(Tartessos.Quest.Finds.Offering).%DeleteId(offeringId)
+    }
+
+    If sarcophagusId '= "" {
+        Do ##class(Tartessos.Quest.Finds.Sarcophagus).%DeleteId(sarcophagusId)
+    }
+
+    If mortuaryId '= "" {
+        Do ##class(Tartessos.Quest.Chambers.Mortuary).%DeleteId(mortuaryId)
+    }
+
+    Return
+}
+
+ClassMethod RelationshipMatches(className As %String, relationshipName As %String, expectedType As %String, expectedCardinality As %String, expectedInverse As %String) As %Boolean
+{
+    Set actualType = ""
+    Set actualCardinality = ""
+    Set actualInverse = ""
+    Set isRelationship = 0
+
+    &sql(
+        SELECT Type, Cardinality, Inverse, Relationship
+        INTO :actualType, :actualCardinality, :actualInverse, :isRelationship
+        FROM %Dictionary.CompiledProperty
+        WHERE parent->Name = :className
+        AND Name = :relationshipName
+    )
+
+    If SQLCODE '= 0 {
+        Return 0
+    }
+
+    If 'isRelationship {
+        Return 0
+    }
+
+    If '..TypeMatches(actualType, expectedType) {
+        Return 0
+    }
+
+    If $ZCONVERT(actualCardinality,"L") '= $ZCONVERT(expectedCardinality,"L") {
+        Return 0
+    }
+
+    If actualInverse '= expectedInverse {
+        Return 0
+    }
+
+    Return 1
+}
+
+ClassMethod IndexOnPropertyMatches(className As %String, indexName As %String, propertyName As %String) As %Boolean
+{
+    Set count = 0
+
+    &sql(
+        SELECT COUNT(*)
+        INTO :count
+        FROM %Dictionary.CompiledIndexProperty
+        WHERE parent->parent->Name = :className
+        AND parent->Name = :indexName
+        AND Property = :propertyName
+    )
+
+    If SQLCODE < 0 {
+        Return 0
+    }
+
+    Return count > 0
+}
+
 ClassMethod ValidateAddPageForChamber(className As %String, chamber As %RegisteredObject, expectedRelevant As %Boolean, errorPrefix As %String) As %Status
 {
     Set status = $CLASSMETHOD("Tartessos.Quest.ExcavationUtils", "addPage", chamber)
@@ -822,6 +1224,14 @@ ClassMethod TypeMatches(actualType As %String, expectedType As %String) As %Bool
     }
 
     If (expectedType = "%Boolean") && (actualType = "%Library.Boolean") {
+        Return 1
+    }
+
+    If (expectedType = "%Persistent") && (actualType = "%Library.Persistent") {
+        Return 1
+    }
+
+    If (expectedType = "%Library.Persistent") && (actualType = "%Persistent") {
         Return 1
     }
 
