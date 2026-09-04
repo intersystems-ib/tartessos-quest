@@ -62,6 +62,25 @@ export type Exercise5ValidationResponse = {
   errorMessage: string;
 };
 
+export type Exercise6ValidationResponse = {
+  success: boolean;
+  exercise: number;
+  validationCode: string;
+  relationships?: {
+    mortuarySarcophagus?: boolean;
+    sarcophagusOffering?: boolean;
+  };
+  indexes?: {
+    offeringClassification?: boolean;
+  };
+  validations?: {
+    sarcophagus?: boolean;
+    offering?: boolean;
+  };
+  errorCode: string;
+  errorMessage: string;
+};
+
 export async function getQuestProgress(): Promise<QuestApiProgressResponse> {
   return irisRequest<QuestApiProgressResponse>("/progress");
 }
@@ -84,4 +103,8 @@ export async function validateExercise4(): Promise<Exercise4ValidationResponse> 
 
 export async function validateExercise5(): Promise<Exercise5ValidationResponse> {
   return irisRequest<Exercise5ValidationResponse>("/exercise/5/validate");
+}
+
+export async function validateExercise6(): Promise<Exercise6ValidationResponse> {
+  return irisRequest<Exercise6ValidationResponse>("/exercise/6/validate");
 }

@@ -11,16 +11,13 @@ import { useGame } from "../../game/GameContext";
 import level02Image from "../../assets/images/level02.png";
 import styles from "./Level02ExcavationTools.module.css";
 
+import {
+  getBackendErrorMessage,
+  type BackendErrorPayload,
+} from "../../api/backendErrors";
+
 const LEVEL_ID = "level-02-excavation-tools" as const;
 const NEXT_LEVEL_ID = "level-03-chamber-model" as const;
-
-type Exercise2ErrorPayload = {
-  success?: boolean;
-  exercise?: number;
-  validationCode?: string;
-  errorCode?: string;
-  errorMessage?: string;
-};
 
 type ExcavationKit = {
   trowel?: number;
@@ -53,7 +50,7 @@ export function Level02ExcavationTools() {
 
       if (!response.success) {
         setError(
-          response.errorMessage ||
+          getBackendErrorMessage(t, response.errorCode, "levels.level02.genericValidationError")  ||
             t("levels.level02.genericValidationError"),
         );
         return;
@@ -65,10 +62,10 @@ export function Level02ExcavationTools() {
       completeLevel(LEVEL_ID, response.validationCode);
     } catch (error) {
       if (error instanceof IrisApiError) {
-        const payload = error.payload as Exercise2ErrorPayload | null;
+        const payload = error.payload as BackendErrorPayload | null;
 
         setError(
-          payload?.errorMessage ||
+          getBackendErrorMessage(t, payload?.errorCode, "levels.level02.genericValidationError") ||
             t("levels.level02.genericValidationError"),
         );
         return;

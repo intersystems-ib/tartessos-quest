@@ -4,6 +4,7 @@ import { Level02ExcavationTools } from "../levels/Level02ExcavationTools";
 import { Level03ChamberModel } from "../levels/Level03ChamberModel";
 import { Level04Notebook } from "../levels/Level04Notebook";
 import { Level05PersistentChambers } from "../levels/Level05PersistentChambers";
+import { Level06ConnectedModel } from "../levels/Level06ConnectedModel";
 import { useGame } from "./GameContext";
 
 export function CurrentLevel() {
@@ -27,6 +28,9 @@ export function CurrentLevel() {
 
     case "level-05-persistent-chambers":
       return <Level05PersistentChambers />;
+
+    case "level-06-connected-model":
+      return <Level06ConnectedModel />;
 
     default:
       return <Level00Intro />;

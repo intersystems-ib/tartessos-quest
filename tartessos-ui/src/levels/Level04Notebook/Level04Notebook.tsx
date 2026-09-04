@@ -11,16 +11,13 @@ import { useGame } from "../../game/GameContext";
 import level04Image from "../../assets/images/level04.png";
 import styles from "./Level04Notebook.module.css";
 
+import {
+  getBackendErrorMessage,
+  type BackendErrorPayload,
+} from "../../api/backendErrors";
+
 const LEVEL_ID = "level-04-notebook" as const;
 const NEXT_LEVEL_ID = "level-05-persistent-chambers" as const;
-
-type Exercise4ErrorPayload = {
-  success?: boolean;
-  exercise?: number;
-  validationCode?: string;
-  errorCode?: string;
-  errorMessage?: string;
-};
 
 type NotebookSummary = {
   totalLines?: number;
@@ -74,7 +71,7 @@ export function Level04Notebook() {
         }
         else {
             setError(
-                response.errorMessage ||
+                getBackendErrorMessage(t, response.errorCode, "levels.level04.genericValidationError") ||
                     t("levels.level04.genericValidationError"),
             );
         }
@@ -88,14 +85,14 @@ export function Level04Notebook() {
       completeLevel(LEVEL_ID, response.validationCode);
     } catch (error) {
       if (error instanceof IrisApiError) {
-        const payload = error.payload as Exercise4ErrorPayload | null;
+        const payload = error.payload as BackendErrorPayload | null;
 
         if (payload?.errorCode === "NOTEBOOK_GLOBAL_NOT_FOUND") {
           setError(t("levels.level04.notebookGlobalNotFound"));
         }
         else {
             setError(
-                payload?.errorMessage ||
+                getBackendErrorMessage(t, payload?.errorCode, "levels.level04.genericValidationError") ||
                     t("levels.level04.genericValidationError"),
             );
         }

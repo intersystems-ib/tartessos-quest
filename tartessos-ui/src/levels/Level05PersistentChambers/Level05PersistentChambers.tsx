@@ -11,15 +11,13 @@ import { useGame } from "../../game/GameContext";
 import level05Image from "../../assets/images/level05.png";
 import styles from "./Level05PersistentChambers.module.css";
 
-const LEVEL_ID = "level-05-persistent-chambers" as const;
+import {
+  getBackendErrorMessage,
+  type BackendErrorPayload,
+} from "../../api/backendErrors";
 
-type Exercise5ErrorPayload = {
-  success?: boolean;
-  exercise?: number;
-  validationCode?: string;
-  errorCode?: string;
-  errorMessage?: string;
-};
+const LEVEL_ID = "level-05-persistent-chambers" as const;
+const NEXT_LEVEL_ID = "level-06-connected-model" as const;
 
 type PersistentChambersSummary = {
   hallRelevant?: boolean;
@@ -62,7 +60,7 @@ export function Level05PersistentChambers() {
 
       if (!response.success) {
         setError(
-          response.errorMessage ||
+          getBackendErrorMessage(t, response.errorCode, "levels.level05.genericValidationError") ||
             t("levels.level05.genericValidationError"),
         );
         return;
@@ -74,10 +72,10 @@ export function Level05PersistentChambers() {
       completeLevel(LEVEL_ID, response.validationCode);
     } catch (error) {
       if (error instanceof IrisApiError) {
-        const payload = error.payload as Exercise5ErrorPayload | null;
+        const payload = error.payload as BackendErrorPayload | null;
 
         setError(
-          payload?.errorMessage ||
+          getBackendErrorMessage(t, payload?.errorCode, "levels.level05.genericValidationError") ||
             t("levels.level05.genericValidationError"),
         );
         return;
@@ -87,6 +85,10 @@ export function Level05PersistentChambers() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleContinue() {
+    completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
   }
 
   return (
@@ -180,6 +182,12 @@ export function Level05PersistentChambers() {
               label={t("levels.level05.activationCodeLabel")}
               code={validationCode}
             />
+            <button
+              className={styles.primaryButton}
+              onClick={handleContinue}
+            >
+              {t("levels.level05.continueButton")}
+            </button>
           </div>
         )}
       </section>

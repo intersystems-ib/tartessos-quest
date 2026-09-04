@@ -7,6 +7,10 @@ import { HelpModal } from "../../components/HelpModal";
 import { validateExercise1 } from "../../api/questApi";
 import { useGame } from "../../game/GameContext";
 import { IrisApiError } from "../../api/irisClient";
+import {
+  getBackendErrorMessage,
+  type BackendErrorPayload,
+} from "../../api/backendErrors";
 
 import level01Image from "../../assets/images/level01.png";
 import styles from "./Level01AdventurerRegistration.module.css";
@@ -22,7 +26,6 @@ export function Level01AdventurerRegistration() {
   const alreadyCompleted = isLevelCompleted(LEVEL_ID);
 
   const [helpOpen, setHelpOpen] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [validationCode, setValidationCode] = useState<string | null>(
     alreadyCompleted ? savedCode : null,
@@ -31,60 +34,50 @@ export function Level01AdventurerRegistration() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmitForm() {
-  setLoading(true);
-  setError(null);
+    setLoading(true);
+    setError(null);
 
-  try {
-    const response = await validateExercise1();
+    try {
+      const response = await validateExercise1();
 
-    if (!response.success) {
-      if (response.errorCode === "ADVENTURER_NAME_NOT_CHANGED") {
-        setError(t("levels.level01.formNotCompletedError"));
+      if (!response.success) {
+        setError(
+          getBackendErrorMessage(
+            t,
+            response.errorCode,
+            "levels.level01.genericValidationError",
+          ),
+        );
         return;
       }
 
-      setError(
-        response.errorMessage ||
-          t("levels.level01.genericValidationError"),
-      );
-      return;
-    }
+      setValidationCode(response.validationCode);
+      setAdventurerName(response.adventurerName ?? null);
 
-    setValidationCode(response.validationCode);
-    setAdventurerName(response.adventurerName ?? null);
+      completeLevel(LEVEL_ID, response.validationCode);
+    } catch (error) {
+      if (error instanceof IrisApiError) {
+        const payload = error.payload as BackendErrorPayload | null;
 
-    completeLevel(LEVEL_ID, response.validationCode);
-  } catch (error) {
-    if (error instanceof IrisApiError) {
-      const payload = error.payload as {
-        success?: boolean;
-        exercise?: number;
-        validationCode?: string;
-        errorCode?: string;
-        errorMessage?: string;
-      } | null;
-
-      if (payload?.errorCode === "ADVENTURER_NAME_NOT_CHANGED") {
-        setError(t("levels.level01.formNotCompletedError"));
+        setError(
+          getBackendErrorMessage(
+            t,
+            payload?.errorCode,
+            "levels.level01.genericValidationError",
+          ),
+        );
         return;
       }
 
-      setError(
-        payload?.errorMessage ||
-          t("levels.level01.genericValidationError"),
-      );
-      return;
+      setError(t("levels.level01.connectionError"));
+    } finally {
+      setLoading(false);
     }
-
-    setError(t("levels.level01.connectionError"));
-  } finally {
-    setLoading(false);
   }
-}
 
-function handleContinue() {
-  completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
-}
+  function handleContinue() {
+    completeLevel(LEVEL_ID, validationCode ?? undefined, NEXT_LEVEL_ID);
+  }
 
   return (
     <GameFrame>
@@ -112,24 +105,24 @@ function handleContinue() {
             <p>{t("levels.level01.paragraph3")}</p>
 
             {error && <p className={styles.error}>{error}</p>}
-            
-            <div className={styles.actions}>
-                <button
-                    className={styles.primaryButton}
-                    onClick={() => setHelpOpen(true)}
-                >
-                    {t("levels.level01.helpButton")}
-                </button>
 
-                <button
-                    className={styles.primaryButton}
-                    onClick={handleSubmitForm}
-                    disabled={loading}
-                >
-                    {loading
-                    ? t("levels.level01.submittingButton")
-                    : t("levels.level01.submitButton")}
-                </button>
+            <div className={styles.actions}>
+              <button
+                className={styles.primaryButton}
+                onClick={() => setHelpOpen(true)}
+              >
+                {t("levels.level01.helpButton")}
+              </button>
+
+              <button
+                className={styles.primaryButton}
+                onClick={handleSubmitForm}
+                disabled={loading}
+              >
+                {loading
+                  ? t("levels.level01.submittingButton")
+                  : t("levels.level01.submitButton")}
+              </button>
             </div>
           </>
         ) : (
@@ -148,6 +141,7 @@ function handleContinue() {
               label={t("levels.level01.activationCodeLabel")}
               code={validationCode}
             />
+
             <button
               className={styles.primaryButton}
               onClick={handleContinue}
@@ -157,28 +151,29 @@ function handleContinue() {
           </div>
         )}
       </section>
+
       {helpOpen && (
         <HelpModal
-            title={t("levels.level01.helpTitle")}
-            closeLabel={t("levels.level01.helpCloseButton")}
-            onClose={() => setHelpOpen(false)}
+          title={t("levels.level01.helpTitle")}
+          closeLabel={t("levels.level01.helpCloseButton")}
+          onClose={() => setHelpOpen(false)}
         >
-            <p>{t("levels.level01.helpIntro")}</p>
+          <p>{t("levels.level01.helpIntro")}</p>
 
-            <ol>
+          <ol>
             <li>{t("levels.level01.helpStep1")}</li>
             <li>{t("levels.level01.helpStep2")}</li>
             <li>{t("levels.level01.helpStep3")}</li>
             <li>{t("levels.level01.helpStep4")}</li>
             <li>{t("levels.level01.helpStep5")}</li>
-            </ol>
+          </ol>
 
-            <p>
+          <p>
             <strong>{t("levels.level01.helpExpectedTitle")}:</strong>{" "}
             {t("levels.level01.helpExpectedText")}
-            </p>
+          </p>
         </HelpModal>
-        )}
+      )}
     </GameFrame>
   );
 }

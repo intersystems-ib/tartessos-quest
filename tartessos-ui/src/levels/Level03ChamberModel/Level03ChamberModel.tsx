@@ -11,16 +11,13 @@ import { useGame } from "../../game/GameContext";
 import level03Image from "../../assets/images/level03.png";
 import styles from "./Level03ChamberModel.module.css";
 
+import {
+  getBackendErrorMessage,
+  type BackendErrorPayload,
+} from "../../api/backendErrors";
+
 const LEVEL_ID = "level-03-chamber-model" as const;
 const NEXT_LEVEL_ID = "level-04-notebook" as const;
-
-type Exercise3ErrorPayload = {
-  success?: boolean;
-  exercise?: number;
-  validationCode?: string;
-  errorCode?: string;
-  errorMessage?: string;
-};
 
 export function Level03ChamberModel() {
   const { t } = useTranslation();
@@ -45,7 +42,7 @@ export function Level03ChamberModel() {
 
       if (!response.success) {
         setError(
-          response.errorMessage ||
+          getBackendErrorMessage(t, response.errorCode, "levels.level03.genericValidationError") ||
             t("levels.level03.genericValidationError"),
         );
         return;
@@ -56,10 +53,10 @@ export function Level03ChamberModel() {
       completeLevel(LEVEL_ID, response.validationCode);
     } catch (error) {
       if (error instanceof IrisApiError) {
-        const payload = error.payload as Exercise3ErrorPayload | null;
+        const payload = error.payload as BackendErrorPayload | null;
 
         setError(
-          payload?.errorMessage ||
+          getBackendErrorMessage(t, payload?.errorCode, "levels.level03.genericValidationError") ||
             t("levels.level03.genericValidationError"),
         );
         return;
